@@ -39,7 +39,7 @@ export default function ReceivedTable({id}: Props) {
     }
   }, [currentUser, id]);
 
-  return <Accordion mt={4} allowToggle>
+  return (currentUser?.is_admin && <Accordion mt={4} allowToggle>
     <AccordionItem>
       <h2>
         <AccordionButton>
@@ -73,4 +73,5 @@ export default function ReceivedTable({id}: Props) {
       </AccordionPanel>
     </AccordionItem>
   </Accordion>
+  )
 }
