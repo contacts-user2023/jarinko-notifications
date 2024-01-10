@@ -8,7 +8,7 @@ const withPWA = require('next-pwa')({
   dest: 'public',
   register: true,
   skipWaiting: true,
-  importScripts: ['/pushcode_sw.js']
+  sw: 'pushcode_sw.js'
   // runtimeCaching: [
   //   {
   //     urlPattern: /^https:\/\/jarinko\-notifications\.vercel\.app\/.*/,
