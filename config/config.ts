@@ -1,3 +1,7 @@
+export const getVersion = () => {
+  return process.env.NEXT_PUBLIC_VERSION || '';
+};
+
 export const getHPURL = (): string => {
   return process.env.NEXT_PUBLIC_HP_URL || '';
 };
