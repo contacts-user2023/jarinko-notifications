@@ -3,21 +3,23 @@ import {Container} from "@chakra-ui/react";
 import Header from "./ui/Header";
 import FootNav from "./ui/FootNav";
 import Footer from "./ui/Footer";
+import {Metadata, Viewport} from "next";
+import '@fontsource/zen-maru-gothic/300.css';
+import '@fontsource/zen-maru-gothic/500.css';
+
+export const metadata: Metadata = {
+  title: 'じゃりん子パワー連絡帳',
+  icons: {icon: '/renraku.ico', apple: '/icon-512x512.png'},
+  manifest: '/manifest.json',
+};
+
+export const viewport: Viewport = {
+  themeColor: '#fca651',
+};
 
 export default function RootLayout({children}: { children: React.ReactNode }) {
   return (
     <html lang='ja'>
-    <head>
-      <title>じゃりん子パワー連絡帳</title>
-      <link rel="icon" href="/renraku.ico"/>
-      <link rel="preconnect" href="https://fonts.googleapis.com"/>
-      <link rel="preconnect" href="https://fonts.gstatic.com"/>
-      <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@300;500&display=swap"
-            rel="stylesheet"/>
-      <link rel="manifest" href="/manifest.json" />
-      <link rel="apple-touch-icon" href="/icon-512x512.png"></link>
-      <meta name="theme-color" content="#fca651" />
-    </head>
     <body>
     <Providers>
       <Header/>

@@ -22,6 +22,7 @@ import { useRouter } from 'next/navigation'
 import {useForm} from 'react-hook-form'
 import ReactIcon from "./ReactIcon";
 import {useState} from "react";
+import {PreloadResources} from "../preload-resources";
 
 type Data = {
   email: string,
@@ -29,6 +30,8 @@ type Data = {
 };
 
 export default function Login() {
+  PreloadResources();
+
   const toast = useToast();
   const router = useRouter();
   const[isDisabled, setIsDisabled] = useState(false);
