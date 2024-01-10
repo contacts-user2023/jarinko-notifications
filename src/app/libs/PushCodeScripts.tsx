@@ -3,8 +3,8 @@ import Script from "next/script";
 export default function PushCodeScripts() {
   return (
     <>
-      <Script defer strategy="beforeInteractive" src="https://www.pushcode.jp/dist/js/pushcode.js"/>
-      <Script strategy="beforeInteractive">
+      <Script id="script_1" defer strategy="beforeInteractive" src="https://www.pushcode.jp/dist/js/pushcode.js"/>
+      <Script id="script_2" strategy="beforeInteractive">
         {`window.PushCodeInit = function() {
       try {
       if (PushCode && PushCode.isSupport()) {
