@@ -35,9 +35,14 @@ export type ContentsContact = {
   contents: Contact[]
 }
 export const listContacts = async () => {
+  const now = (new Date()).toISOString();
   const result = await client.getAllContents({
     customRequestInit,
     endpoint: 'contacts',
+    queries: {
+      filters: `publishedAt[less_than]${now}`,
+      orders: '-publishedAt'
+    }
   });
 
   return {contents: result || []};

@@ -14,6 +14,7 @@ import {
   Link
 } from '@chakra-ui/react';
 import NextLink from 'next/link'
+import ReactIcon from "./ReactIcon";
 
 type Props = {
   alreadyRead: boolean,
@@ -37,7 +38,7 @@ export default function ContactInfo({alreadyRead, contactId, postedAt, title}: P
       <Card
         w="100%"
         bg="#fafafa"
-        direction={{base: 'column', sm: 'row'}}
+        direction={{base: 'row'}}
       >
         <CardBody>
           <HStack spacing={4} mb={1}>
@@ -57,6 +58,9 @@ export default function ContactInfo({alreadyRead, contactId, postedAt, title}: P
             {title}
           </Heading>
         </CardBody>
+        <CardFooter alignSelf="center">
+          <ReactIcon iconName="LuChevronRight"/>
+        </CardFooter>
       </Card>
     </Link>
   )
