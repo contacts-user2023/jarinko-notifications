@@ -1,9 +1,10 @@
-// import * as admin from "firebase-admin";
-//
-// import * as serviceAccount from "/firebase/jarinko-member-auth-firebase-adminsdk-ml485-42592dbd15.json";
-//
-// admin.initializeApp({
-//   credential: admin.credential.cert(serviceAccount)
-// });
-//
-// export const db = admin.firestore();
+const {initializeApp, cert, getApp, getApps} = require('firebase-admin/app');
+import { getFirestore } from "firebase-admin/firestore";
+import {getFirebaseAdminConfig} from "../../../config/config";
+const serviceAccount = getFirebaseAdminConfig();
+
+const firebaseAdmin = getApps().length === 0 ? initializeApp({
+  credential: cert(serviceAccount)
+}) : getApp();
+
+export const adminDb = getFirestore(firebaseAdmin);
