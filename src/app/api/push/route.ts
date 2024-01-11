@@ -105,6 +105,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(null, {...resInit, status: 500});
   }
 
+  const requestData = await req.json();
+  console.log(requestData);
   const {
     api,
     id,
@@ -121,7 +123,7 @@ export async function POST(req: NextRequest) {
         publishValue
       }
     }
-  } = await req.json();
+  } = requestData;
 
   // bodyの内容を精査
   if (!(
