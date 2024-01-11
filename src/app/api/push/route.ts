@@ -105,30 +105,24 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(null, {...resInit, status: 500});
   }
 
-  const requestData = await req.json();
-  console.log(requestData);
+  const {api, id, type, contents} = await req.json();
+  if (!(api && id && type && contents)) {
+    return NextResponse.json(null, {...resInit, status: 400});
+  }
   const {
-    api,
-    id,
-    type,
-    contents: {
-      new: {
-        status,
-        publishValue: {
-          title,
-          publishedAt
-        }
-      },
-      old: {
-        publishValue
+    new: {
+      status,
+      publishValue: {
+        title,
       }
-    }
-  } = requestData;
+    },
+    old
+  } = contents;
 
   // bodyの内容を精査
   if (!(
     api === 'contacts'
-    && (type === 'new' || type === 'edit' && !publishValue)
+    && (type === 'new' || type === 'edit' && !old?.publishValue)
     && status[0] === 'PUBLISH'
     && title
     && id
