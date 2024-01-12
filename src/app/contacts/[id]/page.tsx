@@ -1,17 +1,6 @@
-import {
-  Card,
-  Text,
-  Heading,
-  CardHeader,
-  CardBody,
-  CardFooter,
-  ButtonGroup,
-} from '@chakra-ui/react';
-import {getContactById, listAlreadyReadByContentId} from "../../libs/microcms";
-import {toJSTString} from "../../libs/dateFormatter";
-import ReadAlertButton from "../../ui/ReadAlertButton";
-import BackButton from "../../ui/BackButton";
-import ReceivedTable from "../../ui/ReceivedTable";
+import {Suspense} from "react";
+import SkeletonCard from "@src/app/components/ui/SkeletonCard";
+import Contact from "@src/app/components/layout/Contact";
 
 type Props = {
   params: {
@@ -19,47 +8,10 @@ type Props = {
   }
 };
 
-export default async function Page({params}: Props) {
-  const contact = await getContactById(params.id).catch(() => null);
-
-  if (!contact) {
-    return (
-      <Card bg="#fafafa">
-        <CardFooter justify="right">
-          <ButtonGroup spacing={4}>
-            <BackButton href="/contacts" />
-          </ButtonGroup>
-        </CardFooter>
-      </Card>
-    )
-  }
-
-  const data = {
-    date: toJSTString(contact.publishedAt),
-    title: contact.title,
-    body: contact.content
-  };
-
+export default function Page({params}: Props) {
   return (
-    <>
-      <Card bg="#fafafa">
-        <CardHeader>
-          <Text>{data.date}</Text>
-          <Heading fontSize="2xl">{data.title}</Heading>
-          <ReceivedTable id={params.id}/>
-        </CardHeader>
-        <CardBody>
-          <Text as="div" dangerouslySetInnerHTML={{__html: data.body}}/>
-        </CardBody>
-        <CardFooter justify="right">
-          <ButtonGroup spacing={4}>
-            <BackButton href="/contacts" />
-            <ReadAlertButton
-              contactId={params.id}
-            />
-          </ButtonGroup>
-        </CardFooter>
-      </Card>
-    </>
-  )
+    <Suspense fallback={<SkeletonCard/>}>
+      <Contact id={params.id}/>
+    </Suspense>
+  );
 }

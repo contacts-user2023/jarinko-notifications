@@ -10,9 +10,11 @@ import {
   Divider,
   Badge,
   CardBody,
+  CardFooter,
   Link
 } from '@chakra-ui/react';
 import NextLink from 'next/link'
+import ReactIcon from "../ui/ReactIcon";
 
 type Props = {
   alreadyRead: boolean,
@@ -21,7 +23,7 @@ type Props = {
   title: string
 };
 
-export default function ReceivedInfo({alreadyRead, contactId, postedAt, title}: Props) {
+export default function ContactsItem({alreadyRead, contactId, postedAt, title}: Props) {
 
   return (
     <Link
@@ -36,14 +38,11 @@ export default function ReceivedInfo({alreadyRead, contactId, postedAt, title}: 
       <Card
         w="100%"
         bg="#fafafa"
+        direction={{base: 'row'}}
       >
         <CardBody>
           <HStack spacing={4} mb={1}>
-            {
-              alreadyRead
-                ? <></>
-                : <Badge colorScheme='red'>NEW</Badge>
-            }
+            <Badge colorScheme='red' display={alreadyRead ? 'none' : 'block'}>未読</Badge>
             <Text>{postedAt}</Text>
           </HStack>
           <Heading
@@ -59,6 +58,9 @@ export default function ReceivedInfo({alreadyRead, contactId, postedAt, title}: 
             {title}
           </Heading>
         </CardBody>
+        <CardFooter alignSelf="center">
+          <ReactIcon iconName="LuChevronRight"/>
+        </CardFooter>
       </Card>
     </Link>
   )

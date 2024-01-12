@@ -7,7 +7,7 @@ import {
   signInWithEmailAndPassword,
   getRedirectResult,
 } from "firebase/auth";
-import {getFirebaseConfig} from "../../../config/config";
+import {getFirebaseConfig} from "@/config/config";
 
 export type User = {
   name: string

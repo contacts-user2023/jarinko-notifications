@@ -1,8 +1,8 @@
 import {Providers} from './providers'
 import {Container} from "@chakra-ui/react";
-import Header from "./ui/Header";
-import FootNav from "./ui/FootNav";
-import Footer from "./ui/Footer";
+import Header from "@src/app/components/layout/Header";
+import FootNav from "@src/app/components/ui/FootNav";
+import Footer from "@src/app/components/layout/Footer";
 import {Metadata, Viewport} from "next";
 import '@fontsource/zen-maru-gothic/300.css';
 import '@fontsource/zen-maru-gothic/500.css';

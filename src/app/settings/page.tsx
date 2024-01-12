@@ -6,9 +6,9 @@ import {
   ButtonGroup,
 } from '@chakra-ui/react';
 import NextLink from 'next/link'
-import ReactIcon from "../ui/ReactIcon";
-import LogOutButton from "../ui/LogOutButton";
-import {getHPURL} from "../../../config/config";
+import ReactIcon from "@src/app/components/ui/ReactIcon";
+import LogOutButton from "@src/app/components/ui/LogOutButton";
+import {getHPURL} from "@/config/config";
 
 export default function Page() {
   return (

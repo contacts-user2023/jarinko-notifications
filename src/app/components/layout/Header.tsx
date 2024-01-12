@@ -1,11 +1,8 @@
 import {
-  Card,
-  Text,
   Image,
   HStack,
   Center,
   Heading,
-  Box,
 } from '@chakra-ui/react';
 
 export default function Header() {

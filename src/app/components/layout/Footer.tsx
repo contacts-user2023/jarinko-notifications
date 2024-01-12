@@ -1,15 +1,8 @@
 import {
-  Card,
   Text,
-  Image,
-  HStack,
   Center,
-  Heading,
-  Box,
-  StackDivider,
-  Divider,
 } from '@chakra-ui/react';
-import {getVersion} from "../../../config/config";
+import {getVersion} from "@/config/config";
 
 export default function Footer() {
 

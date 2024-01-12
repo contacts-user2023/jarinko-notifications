@@ -1,16 +1,10 @@
-'use client'
-
 import {
-  Card,
-  Text,
-  Image,
   HStack,
-  Box,
   Heading,
   StackDivider,
-  ButtonGroup, VStack,
+  ButtonGroup,
 } from '@chakra-ui/react'
-import BackButton from "./ui/BackButton";
+import BackButton from "@src/app/components/ui/BackButton";
 
 export default function Page() {
   return (

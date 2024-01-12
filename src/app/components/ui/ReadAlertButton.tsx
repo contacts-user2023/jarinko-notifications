@@ -1,26 +1,25 @@
 'use client';
 
 import {Button, useToast} from "@chakra-ui/react";
-import {createAlreadyRead, getAlreadyReadById} from "../libs/microcms";
-import ReactIcon from "./ReactIcon";
+import {createAlreadyRead, getAlreadyReadById} from "@src/app/libs/microcms";
+import ReactIcon from "@src/app/components/ui/ReactIcon";
 import {useEffect, useState} from "react";
-import {useAuth} from "./AuthContext";
 
-export default function ReadAlertButton({contactId}: {contactId: string}) {
+type Props = {
+  contactId: string,
+  memberId: string,
+  name: string
+};
+
+export default function ReadAlertButton({contactId, memberId, name}: Props) {
   const toast = useToast();
   const [disabled, setDisabled] = useState(true);
-  const {currentUser} = useAuth();
-
   const onClickFunction = async () => {
-    if(!currentUser) {
-      return false;
-    }
-
     const body = {
       contactId: contactId,
-      memberId: currentUser.uid,
-      contactMember: `${contactId}\$\$${currentUser.uid}`,
-      name: currentUser.name,
+      memberId: memberId,
+      contactMember: `${contactId}\$\$${memberId}`,
+      name: name,
     };
 
     try {
@@ -41,15 +40,13 @@ export default function ReadAlertButton({contactId}: {contactId: string}) {
   };
 
   useEffect(() => {
-    if(currentUser) {
       (async () => {
-        const alreadyRead = await getAlreadyReadById(`${contactId}\$\$${currentUser.uid}`);
+        const alreadyRead = await getAlreadyReadById(`${contactId}\$\$${memberId}`);
         if (alreadyRead?.contents?.length === 0) {
           setDisabled(false);
         }
       })()
-    }
-  }, [contactId, currentUser]);
+  }, [contactId, memberId]);
 
   return <Button
     colorScheme="yellow"

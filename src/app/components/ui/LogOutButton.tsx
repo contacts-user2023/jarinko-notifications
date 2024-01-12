@@ -2,18 +2,19 @@
 
 import {Button, useToast} from "@chakra-ui/react";
 import ReactIcon from "./ReactIcon";
-import {getAuth, signOut} from "../libs/firebaseConfig";
+import {signOut} from "next-auth/react";
+import {getAuth, signOut as firebaseSignOut} from "@src/app/libs/firebaseConfig";
 import {useState} from "react";
 
 export default function LogOutButton() {
   const toast = useToast();
-  const[isDisabled, setIsDisabled] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(false);
 
   const onClickFunction = async () => {
-    const auth = getAuth();
     setIsDisabled(true);
-
-    signOut(auth)
+    const auth = getAuth();
+    await firebaseSignOut(auth);
+    signOut()
       .then(() => {
         toast({
           title: 'ログアウトしました。',
@@ -25,6 +26,7 @@ export default function LogOutButton() {
       })
       .catch((error) => {
         console.log(error);
+        setIsDisabled(false);
       });
   };
 

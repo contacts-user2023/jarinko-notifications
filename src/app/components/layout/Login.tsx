@@ -4,11 +4,7 @@ import {
   Card,
   CardBody,
   Text,
-  Image,
-  HStack,
   VStack,
-  Box,
-  Heading,
   InputGroup,
   Input,
   InputLeftAddon,
@@ -16,13 +12,13 @@ import {
   Button,
   useToast,
 } from '@chakra-ui/react'
-import {firebaseApp, getAuth, signInWithEmailAndPassword} from "../libs/firebaseConfig";
+import {getAuth, signInWithEmailAndPassword} from "@src/app/libs/firebaseConfig";
 import {FirebaseError} from 'firebase/app'
-import { useRouter } from 'next/navigation'
 import {useForm} from 'react-hook-form'
-import ReactIcon from "./ReactIcon";
+import ReactIcon from "@src/app/ui/ReactIcon";
 import {useState} from "react";
-import {PreloadResources} from "../preload-resources";
+import {PreloadResources} from "@src/app/preload-resources";
+import { signIn as signInByNextAuth } from "next-auth/react";
 
 type Data = {
   email: string,
@@ -33,7 +29,6 @@ export default function Login() {
   PreloadResources();
 
   const toast = useToast();
-  const router = useRouter();
   const[isDisabled, setIsDisabled] = useState(false);
 
   const isValid = async (data: Data) => {
@@ -41,8 +36,12 @@ export default function Login() {
 
     try {
       const auth = getAuth();
-      await signInWithEmailAndPassword(auth, data.email, data.password);
-      router.replace('/contacts');
+      const userCredential = await signInWithEmailAndPassword(auth, data.email, data.password);
+      const idToken = await userCredential.user.getIdToken();
+      await signInByNextAuth("credentials", {
+        idToken,
+        callbackUrl: "/contacts",
+      });
       toast({
         title: 'ログイン成功',
         status: 'success',

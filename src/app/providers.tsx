@@ -1,10 +1,10 @@
 'use client';
 import {extendTheme} from "@chakra-ui/react"
 import {ChakraProvider} from '@chakra-ui/react'
-import {FirebaseAuthProvider} from "./ui/AuthContext";
+import SessionProvider from "@src/app/SessionProvider";
 
 export function Providers({children}: { children: React.ReactNode }) {
-  return <FirebaseAuthProvider>
+  return <SessionProvider>
     <ChakraProvider
       theme={extendTheme({
         config: {
@@ -25,5 +25,5 @@ export function Providers({children}: { children: React.ReactNode }) {
         }
       })}
     >{children}</ChakraProvider>
-  </FirebaseAuthProvider>
+  </SessionProvider>
 }

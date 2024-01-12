@@ -1,5 +1,5 @@
-import ContactList from "../ui/ContactList";
+import Contacts from "@src/app/components/layout/Contacts";
 
 export default function Page() {
-  return <ContactList/>
+  return <Contacts/>
 }

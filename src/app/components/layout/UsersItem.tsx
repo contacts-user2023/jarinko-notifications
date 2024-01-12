@@ -14,7 +14,7 @@ type Props = {
   uid: string,
 };
 
-export default function ContactInfo({name, is_admin, uid}: Props) {
+export default function UsersItem({name, is_admin, uid}: Props) {
   return (
     <Link
       as={NextLink}
