@@ -1,6 +1,7 @@
 import {headers} from 'next/headers';
 import {NextRequest, NextResponse} from 'next/server';
 import {getContactById} from "../../libs/microcms";
+import {toJSTDateTimeISOString} from "../../libs/dateFormatter";
 
 type PushCodeContentBody = {
   "domain_id": number,
@@ -167,7 +168,7 @@ export async function POST(req: NextRequest) {
 
     const now = new Date();
     // 記事公開から10分後にpush通知を送信する
-    const sendAt = (new Date(now.setMinutes(now.getMinutes() + 10))).toISOString();
+    const sendAt = toJSTDateTimeISOString(now.setMinutes(now.getMinutes() + 10));
     const pushSend = await fetch(`${PUSHCODE_API_URL}/push/${pushContentResult.content.api_token}`, {
       method: 'POST',
       headers: PUSHCODE_API_HEADERS,
