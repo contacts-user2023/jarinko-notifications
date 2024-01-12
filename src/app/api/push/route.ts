@@ -165,11 +165,17 @@ export async function POST(req: NextRequest) {
     });
     const pushContentResult: PushCodeContentResponse = await pushContent.json();
 
+    const now = new Date();
+    // 記事公開から10分後にpush通知を送信する
+    const sendAt = (new Date(now.setMinutes(now.getMinutes() + 10))).toISOString();
     const pushSend = await fetch(`${PUSHCODE_API_URL}/push/${pushContentResult.content.api_token}`, {
       method: 'POST',
       headers: PUSHCODE_API_HEADERS,
       body: JSON.stringify({
-        "when": {"immediate": true}
+        "when": {
+          "immediate": false,
+          "datetime": sendAt
+        }
       }),
     });
     const pushSendResult: PushCodeSendResponse = await pushSend.json();
