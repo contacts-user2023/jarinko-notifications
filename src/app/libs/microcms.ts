@@ -1,6 +1,6 @@
 import {createClient} from 'microcms-js-sdk'
 import type {CustomRequestInit, MicroCMSImage, MicroCMSQueries, MicroCMSContentId, MicroCMSDate} from 'microcms-js-sdk'
-import {getMicroCMSConfig, getNextRuntime, getNodeEnv} from "../../../config/config";
+import {getMicroCMSConfig, getNextRuntime, getNodeEnv} from "@/config/config";
 
 const config = getMicroCMSConfig();
 
@@ -19,9 +19,9 @@ const customRequestInit: CustomRequestInit | undefined = (() => {
       cache: 'no-cache',
     }
   }
-  // if (getNextRuntime() === 'edge') return undefined;
+  if (getNextRuntime() === 'edge') return undefined;
   return {
-    cache: 'no-cache',
+    cache: 'default',
   }
 })();
 
