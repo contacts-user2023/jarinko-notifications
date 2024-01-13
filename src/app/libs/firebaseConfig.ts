@@ -5,6 +5,8 @@ import {
   getAuth,
   signOut,
   signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
   getRedirectResult,
 } from "firebase/auth";
 import {getFirebaseConfig} from "@/config/config";
@@ -26,4 +28,13 @@ if (typeof window !== undefined && !getApps().length) {
 
 const db = getFirestore();
 
-export {firebaseApp, getAuth, signOut, signInWithEmailAndPassword, getRedirectResult, db};
+export {
+  firebaseApp,
+  getAuth,
+  signOut,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
+  getRedirectResult,
+  db
+};

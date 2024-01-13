@@ -17,6 +17,8 @@ import {
   LuLogIn,
   LuArrowBigRight,
   LuChevronRight,
+  LuFilePlus,
+  LuPencil,
 } from "react-icons/lu";
 import {
   IoMdLogIn,
@@ -50,6 +52,8 @@ const icon = {
   IoMdLogOut: IoMdLogOut,
   LuArrowBigRight: LuArrowBigRight,
   LuChevronRight: LuChevronRight,
+  LuFilePlus: LuFilePlus,
+  LuPencil: LuPencil,
 };
 
 const RIcon = (iconName: string): typeof Icon => {
