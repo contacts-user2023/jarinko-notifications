@@ -15,7 +15,7 @@ import {
 import {getAuth, signInWithEmailAndPassword} from "@src/app/libs/firebaseConfig";
 import {FirebaseError} from 'firebase/app'
 import {useForm} from 'react-hook-form'
-import ReactIcon from "@src/app/ui/ReactIcon";
+import ReactIcon from "@src/app/components/ui/ReactIcon";
 import {useState} from "react";
 import {PreloadResources} from "@src/app/preload-resources";
 import { signIn as signInByNextAuth } from "next-auth/react";
