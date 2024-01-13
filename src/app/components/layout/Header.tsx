@@ -30,7 +30,7 @@ export default function Header() {
         <Heading fontSize="2xl">
           じゃりん子パワー連絡帳
         </Heading>
-        <Image src={`/header/month_${month}.png`} alt={`${month}月`} w="2.5rem" h="2.5rem"/>
+        <Image src={`/header/month_${month}.webp`} alt={`${month}月`} w="2.5rem" h="2.5rem"/>
       </HStack>
     </Center>
   )
