@@ -21,7 +21,7 @@ const customRequestInit: CustomRequestInit | undefined = (() => {
   }
   // if (getNextRuntime() === 'edge') return undefined;
   return {
-    cache: 's-maxage=1, stale-while-revalidate',
+    cache: 'no-cache',
   }
 })();
 
