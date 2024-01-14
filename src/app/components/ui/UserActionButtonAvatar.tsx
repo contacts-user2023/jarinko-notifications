@@ -17,6 +17,7 @@ import {
 import ReactIcon from "@src/app/components/ui/ReactIcon";
 import {useState} from "react";
 import {useRouter} from "next/navigation";
+import {getAuth, sendPasswordResetEmail} from "@src/app/libs/firebaseConfig";
 
 type Props = {
   actionType: string,
@@ -48,22 +49,50 @@ export default function UserActionButtonAvatar(
     onClose();
     switch (actionType) {
       case 'delete':
-        const response = await fetch("/api/users/", {
+        const deleteRes = await fetch("/api/users/", {
           method: 'DELETE',
           headers: {"Content-Type": "application/json"},
           body: JSON.stringify({uid: uid}),
         });
         toast({
-          title: `ユーザー削除${response?.ok ? '成功' : '失敗'}`,
-          status: response?.ok ? 'success' : 'error',
-          position:'top',
+          title: `ユーザー削除${deleteRes?.ok ? '成功' : '失敗'}`,
+          status: deleteRes?.ok ? 'success' : 'error',
+          position: 'top',
           duration: 5000,
           isClosable: true,
         });
         router.refresh();
         break;
       case 'reset':
-        console.log('reset');
+        try {
+          const getRes = await fetch(`/api/users/${uid}`, {
+            method: 'GET',
+          });
+
+          if (!getRes?.ok) {
+            throw new Error('User is nothing');
+          }
+          const user = await getRes.json();
+          const auth = getAuth();
+
+          await sendPasswordResetEmail(auth, user?.email);
+          toast({
+            title: `メール送信成功`,
+            status: 'success',
+            position: 'top',
+            duration: 5000,
+            isClosable: true,
+          });
+        } catch (e) {
+          console.log(e);
+          toast({
+            title: `メール送信失敗`,
+            status: 'error',
+            position: 'top',
+            duration: 5000,
+            isClosable: true,
+          });
+        }
         break;
       default:
         console.log('actionType is nothing');
