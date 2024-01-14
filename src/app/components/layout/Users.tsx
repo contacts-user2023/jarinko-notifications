@@ -11,6 +11,12 @@ import ReactIcon from "@src/app/components/ui/ReactIcon";
 export default async function Users() {
   const usersRef = adminDb.collection('users');
   const users = (await usersRef.get()).docs.map(v => v.data());
+  users.sort((a, b) => {
+    if(a?.is_admin) {
+      return -1;
+    }
+    return 0;
+  });
 
   return (
     <>

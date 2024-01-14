@@ -19,12 +19,14 @@ import {
   LuChevronRight,
   LuFilePlus,
   LuPencil,
+  LuTrash2,
 } from "react-icons/lu";
 import {
   IoMdLogIn,
   IoMdLogOut,
 } from "react-icons/io";
 import { FaRegQuestionCircle } from "react-icons/fa";
+import { MdLockReset } from "react-icons/md";
 import {Icon} from "@chakra-ui/react";
 
 type IconName = string;
@@ -54,6 +56,8 @@ const icon = {
   LuChevronRight: LuChevronRight,
   LuFilePlus: LuFilePlus,
   LuPencil: LuPencil,
+  LuTrash2: LuTrash2,
+  MdLockReset: MdLockReset,
 };
 
 const RIcon = (iconName: string): typeof Icon => {
