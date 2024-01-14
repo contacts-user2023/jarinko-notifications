@@ -46,6 +46,11 @@ export default async function Contact({id}: Props) {
     body: contact.content
   };
 
+  const contentStyles = {
+    'h1, h2, h3, h4, h5, h6, p, ul, figure': {marginBottom: '1rem'},
+    'li': {marginLeft: '1rem'},
+  };
+
   return (
     <Card bg="#fafafa">
       <CardHeader>
@@ -54,7 +59,7 @@ export default async function Contact({id}: Props) {
       <ReceivedTable id={id}/>
     </CardHeader>
       <CardBody>
-        <Box as="div">
+        <Box as="div" sx={contentStyles}>
           {parse(data.body)}
         </Box>
       </CardBody>
