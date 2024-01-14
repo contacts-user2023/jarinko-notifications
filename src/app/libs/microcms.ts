@@ -19,9 +19,9 @@ const customRequestInit: CustomRequestInit | undefined = (() => {
       cache: 'no-cache',
     }
   }
-  if (getNextRuntime() === 'edge') return undefined;
+  // if (getNextRuntime() === 'edge') return undefined;
   return {
-    cache: 'default',
+    cache: 'no-cache',
   }
 })();
 
