@@ -22,7 +22,6 @@ type Props = {
   actionType: string,
   name: string,
   uid: string,
-  bg: string,
   iconName: string,
   title: string,
   body: string,
@@ -33,7 +32,6 @@ export default function UserActionButtonAvatar(
     actionType,
     name,
     uid,
-    bg,
     iconName,
     body,
     title
@@ -70,16 +68,19 @@ export default function UserActionButtonAvatar(
       default:
         console.log('actionType is nothing');
     }
+    setIsDisabled(false);
   };
 
   return (
     <>
       <Avatar
+        variant="outline"
         as="button"
         onClick={onOpen}
-        bg={bg}
-        size="xs"
-        icon={<ReactIcon iconName={iconName} boxSize={4}/>}
+        bg="inherit"
+        color="red.500"
+        size="sm"
+        icon={<ReactIcon iconName={iconName} boxSize={6}/>}
       />
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay/>

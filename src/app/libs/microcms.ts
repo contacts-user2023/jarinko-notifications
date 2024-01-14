@@ -110,3 +110,16 @@ export const createAlreadyRead = async (body: { [key: string]: string }) => {
     content: body,
   });
 };
+
+export const deleteAlreadyReadByMemberId = async (memberId: string) =>  {
+  const {contents} = await listAlreadyReadByMemberId(memberId);
+  if(contents) {
+    const ids = contents.map(content => content.id);
+    ids.forEach((id: string) => {
+      client.delete({
+        endpoint: 'already_read',
+        contentId: id,
+      });
+    })
+  }
+};

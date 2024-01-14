@@ -10,6 +10,7 @@ import PushCodeScripts from "@src/app/components/ui/PushCodeScripts";
 
 export const metadata: Metadata = {
   title: 'じゃりん子パワー連絡帳',
+  description: 'じゃりん子パワー連絡帳',
   icons: {icon: '/renraku.ico', apple: '/icon-512x512.png'},
   manifest: '/manifest.json',
 };
