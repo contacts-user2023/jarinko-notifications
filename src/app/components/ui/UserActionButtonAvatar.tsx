@@ -23,7 +23,6 @@ type Props = {
   name: string,
   uid: string,
   bg: string,
-  alt?: string,
   iconName: string,
   title: string,
   body: string,
@@ -35,7 +34,6 @@ export default function UserActionButtonAvatar(
     name,
     uid,
     bg,
-    alt,
     iconName,
     body,
     title
@@ -81,7 +79,6 @@ export default function UserActionButtonAvatar(
         onClick={onOpen}
         bg={bg}
         size="xs"
-        alt={alt || title}
         icon={<ReactIcon iconName={iconName} boxSize={4}/>}
       />
       <Modal isOpen={isOpen} onClose={onClose}>
