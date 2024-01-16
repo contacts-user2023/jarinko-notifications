@@ -17,20 +17,17 @@ export default function Header() {
     >
       <HStack
         w="100%"
-        spacing={4}
-        justify="center"
-        pt={2}
-        pb={3}
+        spacing={2}
+        pl={4}
+        py={2}
         mb={5}
         bg="#fcfaf2"
         color="#38270f"
         borderBottom="1px solid"
         borderBottomColor="gray.300"
       >
-        <Heading fontSize="2xl">
-          じゃりん子パワー連絡帳
-        </Heading>
         <Image src={`/header/month_${month}.webp`} alt={`${month}月`} w="2.5rem" h="2.5rem"/>
+        <Image src="/header/header-logo.svg" w="150px" alt="じゃりん子パワー連絡帳" />
       </HStack>
     </Center>
   )
