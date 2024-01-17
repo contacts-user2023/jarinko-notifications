@@ -40,7 +40,6 @@ export default function ReadAlertButton({contactId, name}: Props) {
     const receivesRef = doc(db, "receives", contactId);
     const userReceivesRef = doc(db, "user_receives", currentUser?.uid as string);
     const data = {
-      name: name,
       uid: currentUser?.uid,
       timestamp: Timestamp.now()
     };
