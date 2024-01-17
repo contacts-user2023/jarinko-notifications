@@ -1,52 +1,73 @@
 'use client';
 
 import {Button, useToast} from "@chakra-ui/react";
-import {createAlreadyRead, getAlreadyReadById} from "@src/app/libs/microcms";
 import ReactIcon from "@src/app/components/ui/ReactIcon";
 import {useEffect, useState} from "react";
+import {db} from "@src/app/libs/firebaseConfig";
+import {doc, Timestamp, arrayUnion, setDoc, onSnapshot} from "firebase/firestore";
+import {useSession} from "next-auth/react";
 
 type Props = {
   contactId: string,
   memberId: string,
-  name: string
+  name: string,
 };
 
-export default function ReadAlertButton({contactId, memberId, name}: Props) {
+export default function ReadAlertButton({contactId, name}: Props) {
+  const {data} = useSession();
+  const currentUser = data?.user;
   const toast = useToast();
   const [disabled, setDisabled] = useState(true);
-  const onClickFunction = async () => {
-    const body = {
-      contactId: contactId,
-      memberId: memberId,
-      contactMember: `${contactId}\$\$${memberId}`,
-      name: name,
-    };
 
+  useEffect(() => {
+    if(currentUser) {
+      const unsubscribe = onSnapshot(doc(db, "user_receives", currentUser?.uid), (doc) => {
+        if (doc?.data()) {
+          // @ts-ignore
+          setDisabled(doc.data().received.includes(contactId));
+        } else {
+          setDisabled(false);
+        }
+      });
+
+      return () => unsubscribe();
+    }
+  }, [currentUser, contactId]);
+
+  const onClickFunction = async () => {
+    setDisabled(true);
+
+    const receivesRef = doc(db, "receives", contactId);
+    const userReceivesRef = doc(db, "user_receives", currentUser?.uid as string);
+    const data = {
+      name: name,
+      uid: currentUser?.uid,
+      timestamp: Timestamp.now()
+    };
     try {
-      const result = await createAlreadyRead(body);
+      await setDoc(receivesRef, {received: arrayUnion(data)}, {merge: true});
+      await setDoc(userReceivesRef, {received: arrayUnion(contactId)}, {merge: true});
+
       toast({
         title: 'ありがとうございます。',
         description: "既読通知を送信しました。",
         status: 'success',
-        position:'top',
+        position: 'top',
         duration: 5000,
         isClosable: true,
       })
     } catch (e) {
       console.log(e);
-    } finally {
-      setDisabled(true);
+      toast({
+        title: 'エラーが発生しました。',
+        description: "ページを読み込み直してください。",
+        status: 'error',
+        position: 'top',
+        duration: 5000,
+        isClosable: true,
+      })
     }
   };
-
-  useEffect(() => {
-      (async () => {
-        const alreadyRead = await getAlreadyReadById(`${contactId}\$\$${memberId}`);
-        if (alreadyRead?.contents?.length === 0) {
-          setDisabled(false);
-        }
-      })()
-  }, [contactId, memberId]);
 
   return <Button
     colorScheme="yellow"

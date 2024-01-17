@@ -22,12 +22,12 @@ type Props = {
 };
 
 export default async function Contact({id}: Props) {
-  const contact = await getContactById(id).catch(() => null);
   const user = await getUser();
   if (!user) {
     redirect('/');
   }
 
+  const contact = await getContactById(id).catch(() => null);
   if (!contact) {
     return (
       <Card bg="#fafafa">

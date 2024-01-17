@@ -31,9 +31,7 @@ export type Contact = {
   title: string
   content: string
 }
-export type ContentsContact = {
-  contents: Contact[]
-}
+
 export const listContacts = async () => {
   const now = (new Date()).toISOString();
   const result = await client.getAllContents({
@@ -62,64 +60,4 @@ export const createContact = async (body: { [key: string]: string }) => {
     endpoint: 'contacts',
     content: body,
   });
-};
-
-export type AlreadyRead = {
-  contactId: string,
-  memberId: string
-  name: string,
-  createdAt: string
-};
-export type ContentsAlreadyRead = {
-  contents: AlreadyRead[]
-};
-
-export const listAlreadyReadByMemberId = async (id: string) => {
-  const result = await client.getAllContents({
-    customRequestInit,
-    endpoint: 'already_read',
-    queries: {
-      filters: `memberId[equals]${id}`
-    },
-  });
-
-  return {contents: result || []};
-};
-
-export const listAlreadyReadByContentId = async (id: string) => {
-  return await client.getAllContents<AlreadyRead>({
-    customRequestInit,
-    endpoint: 'already_read',
-    queries: {
-      filters: `contactId[equals]${id}`
-    },
-  });
-};
-
-export const getAlreadyReadById = async (id: string, queries: MicroCMSQueries = {}) => {
-  return client.get<ContentsContact>({
-    customRequestInit,
-    endpoint: 'already_read',
-    queries: {filters: `contactMember[equals]${id}`,},
-  })
-};
-
-export const createAlreadyRead = async (body: { [key: string]: string }) => {
-  return client.create({
-    endpoint: 'already_read',
-    content: body,
-  });
-};
-
-export const deleteAlreadyReadByMemberId = async (memberId: string) =>  {
-  const {contents} = await listAlreadyReadByMemberId(memberId);
-  if(contents) {
-    const ids = contents.map(content => content.id);
-    ids.forEach((id: string) => {
-      client.delete({
-        endpoint: 'already_read',
-        contentId: id,
-      });
-    })
-  }
 };

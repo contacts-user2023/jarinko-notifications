@@ -13,7 +13,9 @@ import NextLink from 'next/link'
 import ReactIcon from "./ReactIcon";
 import {usePathname} from "next/navigation";
 import {useEffect, useState} from "react";
-import {listAlreadyReadByMemberId, listContacts} from "@src/app/libs/microcms";
+import {Contact, listContacts} from "@src/app/libs/microcms";
+import {doc, DocumentData, onSnapshot} from "firebase/firestore";
+import {db} from "@src/app/libs/firebaseConfig";
 
 type Props = {
   name: string,
@@ -39,11 +41,23 @@ export default function NavItem(
 
   useEffect(() => {
     if (currentKey === 'contacts' && currentUser) {
-      (async () => {
-        const alreadyLength = (await listAlreadyReadByMemberId(currentUser.uid))?.contents?.length || 0;
-        const contactLength = (await listContacts())?.contents?.length || 0;
-        setIsBadge(contactLength > alreadyLength);
-      })();
+      const unsubscribe = onSnapshot(doc(db, "user_receives", currentUser?.uid), (doc) => {
+        (async () => {
+          const contacts = (await listContacts())?.contents || [];
+          if (doc?.data()) {
+            const contactIds = contacts.map((v: Contact) => v.id);
+            // @ts-ignore
+            const received = doc.data().received.filter((v: string) => contactIds.includes(v));
+            setIsBadge(contactIds.length > received.length);
+          } else if(contacts.length > 0) {
+            setIsBadge(true);
+          } else {
+            setIsBadge(false);
+          }
+        })();
+      });
+
+      return () => unsubscribe();
     }
     setCurrent(currentKey === pathname.split('/')[1]);
   }, [pathname, currentKey, currentUser]);

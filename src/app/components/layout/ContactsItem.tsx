@@ -15,6 +15,7 @@ import {
 } from '@chakra-ui/react';
 import NextLink from 'next/link'
 import ReactIcon from "../ui/ReactIcon";
+import UnreadBadge from "@src/app/components/ui/UnreadBadge";
 
 type Props = {
   alreadyRead: boolean,
@@ -42,7 +43,7 @@ export default function ContactsItem({alreadyRead, contactId, postedAt, title}: 
       >
         <CardBody>
           <HStack spacing={4} mb={1}>
-            <Badge colorScheme='red' display={alreadyRead ? 'none' : 'block'}>未読</Badge>
+            <UnreadBadge contactId={contactId}/>
             <Text>{postedAt}</Text>
           </HStack>
           <Heading

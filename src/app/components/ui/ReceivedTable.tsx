@@ -14,8 +14,8 @@ import {
   AccordionIcon,
 } from '@chakra-ui/react';
 import {toJSTString} from "@src/app/libs/dateFormatter";
-import {listAlreadyReadByContentId} from "@src/app/libs/microcms";
 import {getUser} from "@src/app/libs/serverUser";
+import {adminDb} from "@src/app/libs/firebaseAdminConfig";
 
 type Props = {
   id: string,
@@ -26,8 +26,21 @@ export default async function ReceivedTable({id}: Props) {
   if(!user || !user?.isAdmin) {
     return <></>;
   }
+  const docRef = adminDb.collection('receives').doc(id);
+  const snap = await docRef.get();
+  const alreadyReads = snap?.data()?.received || [];
 
-  const alreadyReads = await listAlreadyReadByContentId(id).catch(() => null);
+  const usersRef = adminDb.collection('users');
+  const users = (await usersRef.get()).docs.map(v => v.data());
+
+  const activeUserWithReceived = users.map((user: {[key: string]: string}) => {
+    let result: {name: string, receivedAt: null | string} = {name: user.name, receivedAt: null};
+    const alreadyRead = alreadyReads.find((v: {[key: string]: any}) => user.uid === v.uid);
+    if(alreadyRead) {
+      result.receivedAt = toJSTString(alreadyRead.timestamp.toMillis());
+    }
+    return result;
+  });
 
   return (user.isAdmin &&
     <Accordion mt={4} allowToggle>
@@ -35,7 +48,7 @@ export default async function ReceivedTable({id}: Props) {
         <h2>
           <AccordionButton>
             <Box as="span" flex='1' textAlign='left'>
-              読んだ人 {alreadyReads?.length || 0}名
+              読んだ人 {alreadyReads?.length || 0}名 / {users?.length || 0} 名中
             </Box>
             <AccordionIcon/>
           </AccordionButton>
@@ -51,10 +64,10 @@ export default async function ReceivedTable({id}: Props) {
               </Thead>
               <Tbody>
                 {
-                  alreadyReads && alreadyReads.map((v, i) => (
+                  activeUserWithReceived.map((v, i) => (
                     <Tr key={i}>
                       <Td>{v.name}</Td>
-                      <Td>{toJSTString(v.createdAt)}</Td>
+                      <Td>{v.receivedAt}</Td>
                     </Tr>
                   ))
                 }
