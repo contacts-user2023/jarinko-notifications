@@ -18,15 +18,15 @@ import {
   ModalBody,
   ModalCloseButton,
   useDisclosure,
-  useToast,
 } from '@chakra-ui/react'
 import {sendPasswordResetEmail, getAuth} from "@src/app/libs/firebaseConfig";
-import {FirebaseError} from 'firebase/app'
 import {useForm} from 'react-hook-form'
 import ReactIcon from "@src/app/components/ui/ReactIcon";
 import {useState} from "react";
 import BackButton from "@src/app/components/ui/BackButton";
 import {useRouter} from "next/navigation";
+import {useErrorToast, useSuccessToast} from "@src/app/libs/useCustomToast";
+import {toStringErrorCode} from "@src/app/libs/toStringErrorCode";
 
 type Data = {
   email: string,
@@ -36,7 +36,8 @@ type Data = {
 export default function UserNew() {
   const {isOpen, onOpen, onClose} = useDisclosure();
   const router = useRouter();
-  const toast = useToast();
+  const successToast = useSuccessToast();
+  const errorToast = useErrorToast();
   const [isDisabled, setIsDisabled] = useState(false);
   const [data, setData] = useState<Data | null>(null);
   const auth = getAuth();
@@ -56,35 +57,18 @@ export default function UserNew() {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({name: data.name, email: data.email})
-    }).then(v => {
-      return sendPasswordResetEmail(auth, data.email).then(() => {
-        toast({
-          title: 'ユーザー作成成功',
-          description: 'メールアドレス宛に送信したURLから、パスワードの再設定を行ってください。',
-          status: 'success',
-          position: 'top',
-          duration: 5000,
-          isClosable: true,
+    }).then(res => {
+      if(res.ok) {
+        return sendPasswordResetEmail(auth, data.email).then(() => {
+          successToast('ユーザー作成成功', 'メールアドレス宛に送信したURLから、パスワードの再設定を行ってください。');
+          router.push('/users');
         });
-        router.push('/users');
-      });
+      } else {
+        res.json().then(e => errorToast('ユーザー作成失敗', toStringErrorCode(e)));
+      }
     }).catch(e => {
       console.log(e);
-      if (e instanceof FirebaseError) {
-        const message = e.code === 'auth/email-already-in-use'
-          ? 'メールアドレスがすでに使用されています。'
-          : e.code === 'auth/invalid-email'
-            ? 'メールアドレスの形式が正しくありません。'
-            : `エラーコード: ${e.code}`;
-        toast({
-          title: 'ユーザー作成失敗',
-          description: message,
-          status: 'error',
-          position: 'top',
-          duration: 5000,
-          isClosable: true,
-        })
-      }
+      errorToast('ユーザー作成失敗', toStringErrorCode(e));
     }).finally(() => {
       setIsDisabled(false);
     });

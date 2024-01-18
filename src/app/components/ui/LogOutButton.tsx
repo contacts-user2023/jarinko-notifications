@@ -1,13 +1,14 @@
 'use client';
 
-import {Button, useToast} from "@chakra-ui/react";
+import {Button} from "@chakra-ui/react";
 import ReactIcon from "./ReactIcon";
 import {signOut} from "next-auth/react";
 import {getAuth, signOut as firebaseSignOut} from "@src/app/libs/firebaseConfig";
 import {useState} from "react";
+import {useSuccessToast} from "@src/app/libs/useCustomToast";
 
 export default function LogOutButton() {
-  const toast = useToast();
+  const successToast = useSuccessToast();
   const [isDisabled, setIsDisabled] = useState(false);
 
   const onClickFunction = async () => {
@@ -15,15 +16,7 @@ export default function LogOutButton() {
     const auth = getAuth();
     await firebaseSignOut(auth);
     signOut()
-      .then(() => {
-        toast({
-          title: 'ログアウトしました。',
-          status: 'success',
-          position: 'top',
-          duration: 5000,
-          isClosable: true,
-        })
-      })
+      .then(() => successToast('ログアウトしました。'))
       .catch((error) => {
         console.log(error);
         setIsDisabled(false);

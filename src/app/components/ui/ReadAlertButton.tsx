@@ -1,12 +1,13 @@
 'use client';
 
-import {Button, useToast} from "@chakra-ui/react";
+import {Button} from "@chakra-ui/react";
 import ReactIcon from "@src/app/components/ui/ReactIcon";
 import {useEffect, useState} from "react";
 import {db} from "@src/app/libs/firebaseConfig";
 import {doc, Timestamp, arrayUnion, setDoc, onSnapshot} from "firebase/firestore";
 import {useSession} from "next-auth/react";
 import {getAuth, onAuthStateChanged} from "firebase/auth";
+import {useErrorToast, useSuccessToast} from "@src/app/libs/useCustomToast";
 
 type Props = {
   contactId: string,
@@ -17,7 +18,8 @@ type Props = {
 export default function ReadAlertButton({contactId, name}: Props) {
   const {data} = useSession();
   const currentUser = data?.user;
-  const toast = useToast();
+  const successToast = useSuccessToast();
+  const errorToast = useErrorToast();
   const [disabled, setDisabled] = useState(true);
   const auth = getAuth();
 
@@ -52,25 +54,10 @@ export default function ReadAlertButton({contactId, name}: Props) {
     try {
       await setDoc(receivesRef, {received: arrayUnion(data)}, {merge: true});
       await setDoc(userReceivesRef, {received: arrayUnion(contactId)}, {merge: true});
-
-      toast({
-        title: 'ありがとうございます。',
-        description: "既読通知を送信しました。",
-        status: 'success',
-        position: 'top',
-        duration: 5000,
-        isClosable: true,
-      })
+      successToast('ありがとうございます。', "既読通知を送信しました。");
     } catch (e) {
       console.log(e);
-      toast({
-        title: 'エラーが発生しました。',
-        description: "ページを読み込み直してください。",
-        status: 'error',
-        position: 'top',
-        duration: 5000,
-        isClosable: true,
-      })
+      errorToast('エラーが発生しました。', "ページを読み込み直してください。");
     }
   };
 

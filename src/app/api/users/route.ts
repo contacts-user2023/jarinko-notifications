@@ -57,6 +57,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(newUser, {status: 200});
   } catch(e) {
     console.log(e);
-    return NextResponse.json(e, {status: 500});
+    return NextResponse.json(e?.code || e, {status: 500});
   }
 }

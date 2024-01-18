@@ -12,12 +12,13 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-  useDisclosure, useToast,
+  useDisclosure,
 } from "@chakra-ui/react";
 import ReactIcon from "@src/app/components/ui/ReactIcon";
 import {useState} from "react";
 import {useRouter} from "next/navigation";
 import {getAuth, sendPasswordResetEmail} from "@src/app/libs/firebaseConfig";
+import {useErrorToast, useSuccessToast} from "@src/app/libs/useCustomToast";
 
 type Props = {
   actionType: string,
@@ -39,7 +40,8 @@ export default function UserActionButtonAvatar(
   }: Props) {
   const {isOpen, onOpen, onClose} = useDisclosure();
   const [isDisabled, setIsDisabled] = useState(false);
-  const toast = useToast();
+  const successToast = useSuccessToast();
+  const errorToast = useErrorToast();
   const router = useRouter();
 
   const Body = body.split('\n').map((line: string, i) => (<Text key={i}>{line}</Text>));
@@ -54,13 +56,13 @@ export default function UserActionButtonAvatar(
           headers: {"Content-Type": "application/json"},
           body: JSON.stringify({uid: uid}),
         });
-        toast({
-          title: `ユーザー削除${deleteRes?.ok ? '成功' : '失敗'}`,
-          status: deleteRes?.ok ? 'success' : 'error',
-          position: 'top',
-          duration: 5000,
-          isClosable: true,
-        });
+
+        if(deleteRes?.ok) {
+          successToast('ユーザー削除成功');
+        } else {
+          errorToast('ユーザー削除失敗');
+        }
+
         router.refresh();
         break;
       case 'reset':
@@ -76,22 +78,10 @@ export default function UserActionButtonAvatar(
           const auth = getAuth();
 
           await sendPasswordResetEmail(auth, user?.email);
-          toast({
-            title: `メール送信成功`,
-            status: 'success',
-            position: 'top',
-            duration: 5000,
-            isClosable: true,
-          });
+          successToast(`メール送信成功`);
         } catch (e) {
           console.log(e);
-          toast({
-            title: `メール送信失敗`,
-            status: 'error',
-            position: 'top',
-            duration: 5000,
-            isClosable: true,
-          });
+          errorToast(`メール送信失敗`);
         }
         break;
       default:

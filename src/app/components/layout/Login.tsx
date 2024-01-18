@@ -10,7 +10,6 @@ import {
   InputLeftAddon,
   ButtonGroup,
   Button,
-  useToast,
 } from '@chakra-ui/react'
 import {getAuth, signInWithEmailAndPassword} from "@src/app/libs/firebaseConfig";
 import {FirebaseError} from 'firebase/app'
@@ -19,6 +18,7 @@ import ReactIcon from "@src/app/components/ui/ReactIcon";
 import {useState} from "react";
 import {PreloadResources} from "@src/app/preload-resources";
 import { signIn as signInByNextAuth } from "next-auth/react";
+import {useErrorToast, useSuccessToast} from "@src/app/libs/useCustomToast";
 
 type Data = {
   email: string,
@@ -28,7 +28,8 @@ type Data = {
 export default function Login() {
   PreloadResources();
 
-  const toast = useToast();
+  const successToast = useSuccessToast();
+  const errorToast = useErrorToast();
   const[isDisabled, setIsDisabled] = useState(false);
 
   const isValid = async (data: Data) => {
@@ -42,24 +43,11 @@ export default function Login() {
         idToken,
         callbackUrl: "/contacts",
       });
-      toast({
-        title: 'ログイン成功',
-        status: 'success',
-        position:'top',
-        duration: 5000,
-        isClosable: true,
-      });
+      successToast('ログイン成功');
     } catch (e) {
       if (e instanceof FirebaseError) {
-        console.log(e)
-        toast({
-          title: 'ログイン失敗',
-          description: "メールアドレス、パスワードが正しくありません。",
-          status: 'error',
-          position:'top',
-          duration: 5000,
-          isClosable: true,
-        })
+        console.log(e);
+        errorToast('ログイン失敗');
       }
       setIsDisabled(false);
     }
