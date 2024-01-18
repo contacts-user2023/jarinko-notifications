@@ -42,13 +42,15 @@ export default async function ReceivedTable({id}: Props) {
     return result;
   });
 
+  const receivedCount = activeUserWithReceived.filter(item => !!item.receivedAt).length;
+
   return (user.isAdmin &&
     <Accordion mt={4} allowToggle>
       <AccordionItem>
         <h2>
           <AccordionButton>
             <Box as="span" flex='1' textAlign='left'>
-              読んだ人 {alreadyReads?.length || 0}名 / {users?.length || 0} 名中
+              読んだ人 {receivedCount || 0}名 / {users?.length || 0} 名中
             </Box>
             <AccordionIcon/>
           </AccordionButton>
