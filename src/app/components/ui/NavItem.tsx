@@ -16,6 +16,7 @@ import {useEffect, useState} from "react";
 import {Contact, listContacts} from "@src/app/libs/microcms";
 import {doc, DocumentData, onSnapshot} from "firebase/firestore";
 import {db} from "@src/app/libs/firebaseConfig";
+import {getAuth, onAuthStateChanged} from "firebase/auth";
 
 type Props = {
   name: string,
@@ -38,26 +39,31 @@ export default function NavItem(
   const pathname = usePathname();
   const [isBadge, setIsBadge] = useState(false);
   const [current, setCurrent] = useState(false);
+  const auth = getAuth();
 
   useEffect(() => {
     if (currentKey === 'contacts' && currentUser) {
-      const unsubscribe = onSnapshot(doc(db, "user_receives", currentUser?.uid), (doc) => {
-        (async () => {
-          const contacts = (await listContacts())?.contents || [];
-          if (doc?.data()) {
-            const contactIds = contacts.map((v: Contact) => v.id);
-            // @ts-ignore
-            const received = doc.data().received.filter((v: string) => contactIds.includes(v));
-            setIsBadge(contactIds.length > received.length);
-          } else if(contacts.length > 0) {
-            setIsBadge(true);
-          } else {
-            setIsBadge(false);
-          }
-        })();
-      });
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          const unsubscribe = onSnapshot(doc(db, "user_receives", currentUser?.uid), (doc) => {
+            (async () => {
+              const contacts = (await listContacts())?.contents || [];
+              if (doc?.data()) {
+                const contactIds = contacts.map((v: Contact) => v.id);
+                // @ts-ignore
+                const received = doc.data().received.filter((v: string) => contactIds.includes(v));
+                setIsBadge(contactIds.length > received.length);
+              } else if (contacts.length > 0) {
+                setIsBadge(true);
+              } else {
+                setIsBadge(false);
+              }
+            })();
+          });
 
-      return () => unsubscribe();
+          return () => unsubscribe();
+        }
+      })
     }
     setCurrent(currentKey === pathname.split('/')[1]);
   }, [pathname, currentKey, currentUser]);

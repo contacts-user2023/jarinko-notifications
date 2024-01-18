@@ -6,6 +6,7 @@ import {useEffect, useState} from "react";
 import {db} from "@src/app/libs/firebaseConfig";
 import {doc, Timestamp, arrayUnion, setDoc, onSnapshot} from "firebase/firestore";
 import {useSession} from "next-auth/react";
+import {getAuth, onAuthStateChanged} from "firebase/auth";
 
 type Props = {
   contactId: string,
@@ -18,19 +19,24 @@ export default function ReadAlertButton({contactId, name}: Props) {
   const currentUser = data?.user;
   const toast = useToast();
   const [disabled, setDisabled] = useState(true);
+  const auth = getAuth();
 
   useEffect(() => {
-    if(currentUser) {
-      const unsubscribe = onSnapshot(doc(db, "user_receives", currentUser?.uid), (doc) => {
-        if (doc?.data()) {
-          // @ts-ignore
-          setDisabled(doc.data().received.includes(contactId));
-        } else {
-          setDisabled(false);
-        }
-      });
+    if (currentUser) {
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          const unsubscribe = onSnapshot(doc(db, "user_receives", currentUser?.uid), (doc) => {
+            if (doc?.data()) {
+              // @ts-ignore
+              setDisabled(doc.data().received.includes(contactId));
+            } else {
+              setDisabled(false);
+            }
+          });
 
-      return () => unsubscribe();
+          return () => unsubscribe();
+        }
+      })
     }
   }, [currentUser, contactId]);
 

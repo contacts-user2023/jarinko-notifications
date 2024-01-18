@@ -20,15 +20,13 @@ import {
   useDisclosure,
   useToast,
 } from '@chakra-ui/react'
-import {createUserWithEmailAndPassword, sendPasswordResetEmail, getAuth, db} from "@src/app/libs/firebaseConfig";
-import {doc, setDoc} from "firebase/firestore";
+import {sendPasswordResetEmail, getAuth} from "@src/app/libs/firebaseConfig";
 import {FirebaseError} from 'firebase/app'
 import {useForm} from 'react-hook-form'
 import ReactIcon from "@src/app/components/ui/ReactIcon";
 import {useState} from "react";
 import BackButton from "@src/app/components/ui/BackButton";
 import {useRouter} from "next/navigation";
-import {generateRandomString} from "@src/app/libs/generateRandomString";
 
 type Data = {
   email: string,
@@ -41,6 +39,7 @@ export default function UserNew() {
   const toast = useToast();
   const [isDisabled, setIsDisabled] = useState(false);
   const [data, setData] = useState<Data | null>(null);
+  const auth = getAuth();
 
   const isValid = async (data: Data) => {
     setData(data);
@@ -53,22 +52,23 @@ export default function UserNew() {
     }
     setIsDisabled(true);
 
-    try {
-      const auth = getAuth();
-      const userCredential = await createUserWithEmailAndPassword(auth, data.email, generateRandomString(16));
-      const storeData = {uid: userCredential.user.uid, name: data.name};
-      await setDoc(doc(db, "users", userCredential.user.uid), storeData);
-      await sendPasswordResetEmail(auth, data.email);
-      toast({
-        title: 'ユーザー作成成功',
-        description: 'メールアドレス宛に送信したURLから、パスワードの再設定を行ってください。',
-        status: 'success',
-        position: 'top',
-        duration: 5000,
-        isClosable: true,
+    fetch('/api/users', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({name: data.name, email: data.email})
+    }).then(v => {
+      return sendPasswordResetEmail(auth, data.email).then(() => {
+        toast({
+          title: 'ユーザー作成成功',
+          description: 'メールアドレス宛に送信したURLから、パスワードの再設定を行ってください。',
+          status: 'success',
+          position: 'top',
+          duration: 5000,
+          isClosable: true,
+        });
+        router.push('/users');
       });
-      router.push('/users');
-    } catch (e) {
+    }).catch(e => {
       console.log(e);
       if (e instanceof FirebaseError) {
         const message = e.code === 'auth/email-already-in-use'
@@ -85,9 +85,9 @@ export default function UserNew() {
           isClosable: true,
         })
       }
-    } finally {
+    }).finally(() => {
       setIsDisabled(false);
-    }
+    });
   };
 
   const {
@@ -95,6 +95,7 @@ export default function UserNew() {
     handleSubmit,
     formState: {errors},
   } = useForm<Data>();
+
   return (
     <Card>
       <CardBody>
