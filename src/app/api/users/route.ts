@@ -55,8 +55,12 @@ export async function POST(req: NextRequest) {
     const snap = await docRef.set({uid: newUser.uid, name: name});
 
     return NextResponse.json(newUser, {status: 200});
-  } catch(e) {
+  } catch(e: any) {
     console.log(e);
-    return NextResponse.json(e?.code || e, {status: 500});
+    if (e?.code) {
+      return NextResponse.json(e.code, { status: 500 });
+    } else {
+      return NextResponse.json('Internal Server Error', { status: 500 });
+    }
   }
 }
