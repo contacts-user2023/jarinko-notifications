@@ -47,8 +47,12 @@ export default async function Contact({id}: Props) {
   };
 
   const contentStyles = {
-    'h1, h2, h3, h4, h5, h6, p, ul, figure': {marginBottom: '1rem'},
+    'h1, h2, h3, h4, h5, h6, p, ul, figure, table, pre': {marginBottom: '1rem'},
     'li': {marginLeft: '1rem'},
+    'hr': {margin: '1rem 0'},
+    'table': {width: '100%', fontSize: '0.9rem'},
+    'tr, th, td': {border: 'solid 1px #999'},
+    'blockquote': {paddingLeft: '0.5rem', borderLeft: '3px solid #ccc'},
   };
 
   return (
