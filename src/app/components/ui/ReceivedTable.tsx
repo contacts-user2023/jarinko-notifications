@@ -55,7 +55,7 @@ export default async function ReceivedTable({id}: Props) {
             <AccordionIcon/>
           </AccordionButton>
         </h2>
-        <AccordionPanel pb={4}>
+        <AccordionPanel pb={2}>
           <TableContainer>
             <Table size='sm'>
               <Thead>
@@ -68,8 +68,8 @@ export default async function ReceivedTable({id}: Props) {
                 {
                   activeUserWithReceived.map((v, i) => (
                     <Tr key={i}>
-                      <Td>{v.name}</Td>
-                      <Td>{v.receivedAt}</Td>
+                      <Td style={i === activeUserWithReceived.length - 1 ? {borderBottom: 'none'} : {}}>{v.name}</Td>
+                      <Td style={i === activeUserWithReceived.length - 1 ? {borderBottom: 'none'} : {}}>{v.receivedAt}</Td>
                     </Tr>
                   ))
                 }
