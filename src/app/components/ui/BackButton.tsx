@@ -1,9 +1,9 @@
 import {Button} from "@chakra-ui/react";
 import ReactIcon from "./ReactIcon";
 
-type Props = {href: string};
+type Props = {href: string, to?: string};
 
-export default function BackButton({href}: Props) {
+export default function BackButton({href, to = '一覧'}: Props) {
 
   return <Button
     colorScheme="gray"
@@ -12,6 +12,6 @@ export default function BackButton({href}: Props) {
     href={href}
     rightIcon={<ReactIcon iconName='LuArrowBigLeft'/>}
   >
-    一覧へ戻る
+    {to}へ戻る
   </Button>
 }

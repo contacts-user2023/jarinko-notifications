@@ -20,6 +20,7 @@ import {
   LuFilePlus,
   LuPencil,
   LuTrash2,
+  LuSend,
 } from "react-icons/lu";
 import {
   IoMdLogIn,
@@ -58,6 +59,7 @@ const icon = {
   LuPencil: LuPencil,
   LuTrash2: LuTrash2,
   MdLockReset: MdLockReset,
+  LuSend: LuSend,
 };
 
 const RIcon = (iconName: string): typeof Icon => {

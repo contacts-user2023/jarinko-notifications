@@ -10,6 +10,7 @@ import {
   InputLeftAddon,
   ButtonGroup,
   Button,
+  Link,
 } from '@chakra-ui/react'
 import {getAuth, signInWithEmailAndPassword} from "@src/app/libs/firebaseConfig";
 import {FirebaseError} from 'firebase/app'
@@ -19,6 +20,7 @@ import {useState} from "react";
 import {PreloadResources} from "@src/app/preload-resources";
 import { signIn as signInByNextAuth } from "next-auth/react";
 import {useErrorToast, useSuccessToast} from "@src/app/libs/useCustomToast";
+import NextLink from "next/link";
 
 type Data = {
   email: string,
@@ -100,6 +102,16 @@ export default function Login() {
                 isDisabled={isDisabled}
               >ログインする</Button>
             </ButtonGroup>
+            <Link
+              as={NextLink}
+              href="/password-reset"
+              mt={10}
+              ml="auto"
+              borderBottom="solid"
+              _hover={{opacity: 0.7}}
+            >
+              パスワードを忘れた方/再設定はこちら
+            </Link>
           </VStack>
         </form>
       </CardBody>
