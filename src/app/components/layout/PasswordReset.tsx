@@ -97,7 +97,7 @@ export default function PasswordReset() {
                 colorScheme="green"
                 rightIcon={<ReactIcon iconName='LuSend'/>}
                 isDisabled={isDisabled}
-              >パスワード再設定メール送信</Button>
+              >メール送信</Button>
               <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay/>
                 <ModalContent>
