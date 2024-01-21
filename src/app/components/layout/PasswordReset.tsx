@@ -19,14 +19,19 @@ import {
   ModalCloseButton,
   useDisclosure,
 } from '@chakra-ui/react'
-import {sendPasswordResetEmail, getAuth} from "@src/app/libs/firebaseConfig";
+import {
+  sendPasswordResetEmail,
+  getAuth,
+  signOut as firebaseSignOut
+} from "@src/app/libs/firebaseConfig";
 import {useForm} from 'react-hook-form'
 import ReactIcon from "@src/app/components/ui/ReactIcon";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import BackButton from "@src/app/components/ui/BackButton";
 import {useRouter} from "next/navigation";
 import {useErrorToast, useSuccessToast} from "@src/app/libs/useCustomToast";
 import {toStringErrorCode} from "@src/app/libs/toStringErrorCode";
+import {useSession, signOut} from "next-auth/react";
 
 type Data = {
   email: string,
@@ -40,6 +45,19 @@ export default function PasswordReset() {
   const [isDisabled, setIsDisabled] = useState(false);
   const [data, setData] = useState<Data | null>(null);
   const auth = getAuth();
+  const { data: session } = useSession();
+
+  useEffect(() => {
+    const logout = async () => {
+      if (session) {
+        await signOut();
+        const auth = getAuth();
+        await firebaseSignOut(auth);
+      }
+    };
+
+    logout();
+  }, [session]);
 
   const isValid = async (data: Data) => {
     setData(data);
@@ -91,7 +109,7 @@ export default function PasswordReset() {
               <Text color="red">{errors.email?.message}</Text>
             </VStack>
             <ButtonGroup w="100%" mt={10} spacing={4} justifyContent="right">
-              <BackButton href="/users" to="top"/>
+              <BackButton href="/" to="top"/>
               <Button
                 type="submit"
                 colorScheme="green"
