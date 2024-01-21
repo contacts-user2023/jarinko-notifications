@@ -8,7 +8,6 @@ import {ReactNode, Suspense} from "react";
 import {getUser} from "@src/app/libs/serverUser";
 import {redirect} from 'next/navigation'
 import ContactsItem from "@src/app/components/layout/ContactsItem";
-import SkeletonCard from "@src/app/components/ui/SkeletonCard";
 import {adminDb} from "@src/app/libs/firebaseAdminConfig";
 
 type Props = {
@@ -28,26 +27,24 @@ export default async function Contacts({children}: Props) {
   let receives: Receives = [];
   snap.forEach(doc => {
     const data = doc.data();
-    if(data?.received && data.received.some((v:{[key: string]: string}) => v.uid === user.uid)) {
+    if (data?.received && data.received.some((v: { [key: string]: string }) => v.uid === user.uid)) {
       receives.push(doc.id);
     }
   });
 
   return (
     <VStack>
-      <Suspense fallback={<SkeletonCard length={10}/>}>
-        {
-          contacts?.contents && contacts.contents.map((contact: Contact, i) => (
-            <ContactsItem
-              key={i}
-              alreadyRead={receives.includes(contact.id as string)}
-              contactId={contact.id}
-              postedAt={toJSTString(contact.publishedAt)}
-              title={contact.title}
-            />
-          ))
-        }
-      </Suspense>
+      {
+        contacts?.contents && contacts.contents.map((contact: Contact, i) => (
+          <ContactsItem
+            key={i}
+            alreadyRead={receives.includes(contact.id as string)}
+            contactId={contact.id}
+            postedAt={toJSTString(contact.publishedAt)}
+            title={contact.title}
+          />
+        ))
+      }
     </VStack>
   )
 }

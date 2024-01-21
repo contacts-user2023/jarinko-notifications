@@ -5,7 +5,8 @@ export default function SkeletonCard({length = 1}) {
     <Card key={index} w="100%" bg='#fafafa'>
       <CardBody>
         <SkeletonText w="25%" noOfLines={1} skeletonHeight='3' />
-        <SkeletonText mt='4' noOfLines={1} skeletonHeight='4' />
+        <SkeletonText w="75%" mt='4' noOfLines={1} skeletonHeight='5' />
+        <SkeletonText mt='10' noOfLines={10} skeletonHeight='4' />
       </CardBody>
     </Card>
   ));
