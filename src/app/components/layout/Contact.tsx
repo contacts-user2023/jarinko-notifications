@@ -64,7 +64,7 @@ export default async function Contact({id}: Props) {
     </CardHeader>
       <CardBody>
         <Box as="div" sx={contentStyles}>
-          {parse(data.body)}
+          {data?.body ? parse(data.body) : <></>}
         </Box>
       </CardBody>
       <CardFooter justify="right">
