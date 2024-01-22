@@ -72,3 +72,5 @@ export const getMicroCMSConfig = (): MicroCMSConfig => {
 
 export const getNodeEnv = () => process.env.NODE_ENV;
 export const getNextRuntime = () => process.env?.NEXT_RUNTIME;
+
+export const getEncryptionKey = () => process.env?.NEXT_PUBLIC_CRYPTO_SECRET || '';

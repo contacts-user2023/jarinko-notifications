@@ -28,6 +28,7 @@ import {
 } from "react-icons/io";
 import { FaRegQuestionCircle } from "react-icons/fa";
 import { MdLockReset } from "react-icons/md";
+import { BsChatDots } from "react-icons/bs";
 import {Icon} from "@chakra-ui/react";
 
 type IconName = string;
@@ -60,6 +61,7 @@ const icon = {
   LuTrash2: LuTrash2,
   MdLockReset: MdLockReset,
   LuSend: LuSend,
+  BsChatDots: BsChatDots,
 };
 
 const RIcon = (iconName: string): typeof Icon => {

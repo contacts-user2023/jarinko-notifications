@@ -7,6 +7,8 @@ import {
   CardFooter,
   Link,
   Divider,
+  Spacer,
+  Avatar,
 } from '@chakra-ui/react';
 import NextLink from 'next/link'
 import ReactIcon from "@src/app/components/ui/ReactIcon";
@@ -54,7 +56,20 @@ export default function UsersItem({name, is_admin, uid}: Props) {
       </Link>
       <Divider color="#ddd"/>
       <CardFooter py={3}>
-        <HStack justify="right" w="100%" spacing={4}>
+        <HStack w="100%" spacing={4}>
+          {
+            !is_admin &&
+            <Avatar
+              variant="outline"
+              as="a"
+              href={`/chat/${uid}`}
+              bg="inherit"
+              color="green.400"
+              size="sm"
+              icon={<ReactIcon iconName="BsChatDots" boxSize={6}/>}
+            />
+          }
+          <Spacer />
           <UserActionButtonAvatar
             name={name}
             uid={uid}

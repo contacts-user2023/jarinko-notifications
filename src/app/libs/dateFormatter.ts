@@ -1,23 +1,64 @@
-export const toJSTString = (date: string | Date) => {
-  if(!date) {
+export const toJSTString = (date: string | number | Date) => {
+  if (!date) {
     return '';
   }
 
-  date = new Date(date);
-  const JST = date.setHours(date.getHours() + 9);
-  const JSTString = new Date(JST).toISOString();
+  const jstFormatter = new Intl.DateTimeFormat('ja-JP', {
+    timeZone: 'Asia/Tokyo',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  });
 
-  return JSTString.split('T')[0];
+  return jstFormatter.format(new Date(date));
 };
 
 export const toJSTDateTimeISOString = (date: number | Date) => {
+  if (!date) {
+    return '';
+  }
+
+  const jstFormatter = new Intl.DateTimeFormat('ja-JP', {
+    timeZone: 'Asia/Tokyo',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+  });
+
+  return jstFormatter.format(new Date(date)) + '+0900';
+};
+
+export const toJSTTimeString = (date: number | Date) => {
+  if (!date) {
+    return '';
+  }
+
+  const jstFormatter = new Intl.DateTimeFormat('ja-JP', {
+    timeZone: 'Asia/Tokyo',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  });
+
+  return jstFormatter.format(new Date(date));
+};
+
+export const toJSTDateString = (date: number | Date) => {
   if(!date) {
     return '';
   }
 
-  date = new Date(date);
-  date.setHours(date.getHours() + 9);
-  const nowString = (new Date(date)).toISOString();
+  const jstFormatter = new Intl.DateTimeFormat('ja-JP', {
+    timeZone: 'Asia/Tokyo',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    weekday: 'short',
+  });
 
-  return nowString.split('.')[0] + '+0900';
+  return jstFormatter.format(new Date(date));
 };

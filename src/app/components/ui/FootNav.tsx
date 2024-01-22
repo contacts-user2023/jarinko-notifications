@@ -26,6 +26,13 @@ const initItems = (isAdmin = false): Items => {
       isBadge: false,
       currentKey: 'contacts',
     },
+    chat: {
+      name: 'チャット',
+      href: '/chat',
+      iconName: 'BsChatDots',
+      isBadge: false,
+      currentKey: 'chat',
+    },
     settings: {
       name: '設定',
       href: '/settings',

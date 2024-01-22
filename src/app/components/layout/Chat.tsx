@@ -1,0 +1,160 @@
+'use client';
+
+import {Box, Button, Textarea, HStack, Center, VStack, AbsoluteCenter,} from '@chakra-ui/react';
+import {useSession} from "next-auth/react";
+import {useEffect, useRef, useState, ChangeEvent} from "react";
+import {getAuth, onAuthStateChanged} from "firebase/auth";
+import {arrayUnion, doc, DocumentData, onSnapshot, setDoc, Timestamp} from "firebase/firestore";
+import {db} from "@src/app/libs/firebaseConfig";
+import {toJSTDateString, toJSTTimeString} from "@src/app/libs/dateFormatter";
+import DateDivider from "@src/app/components/ui/DateDivider";
+import OutgoingMessage from "@src/app/components/ui/OutgoingMessage";
+import IncomingMessage from "@src/app/components/ui/IncomingMessage";
+import ReactIcon from "@src/app/components/ui/ReactIcon";
+import {decryptMessage, encryptMessage} from "@src/app/libs/encryption";
+
+type Props = {
+  toUid?: string
+};
+
+type Chat = {
+  uid: string,
+  timestamp: Timestamp,
+  message: string,
+};
+
+export default function Chat({toUid}: Props) {
+  const {data: session} = useSession();
+  const currentUser = session?.user;
+  const auth = getAuth();
+
+  const [chats, setChats] = useState<Chat[]>([]);
+  const [message, setMessage] = useState<string>("");
+  const [disabled, setDisabled] = useState(false);
+
+  const endOfMessagesRef = useRef<HTMLDivElement>(null);
+  const chatWindowRef = useRef<HTMLDivElement>(null); // チャットウィンドウのためのref
+  const [isInitialLoad, setIsInitialLoad] = useState(true); // 初期読み込みフラグ
+
+  useEffect(() => {
+    if (toUid && !currentUser?.isAdmin) {
+      setChats([]);
+    } else if (currentUser) {
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          const documentId = toUid || user.uid;
+          const unsubscribe = onSnapshot(doc(db, "chat", documentId), (doc) => {
+            if (doc?.data()) {
+              // @ts-ignore
+              setChats(doc.data()?.messages);
+            } else {
+            }
+          });
+
+          return () => unsubscribe();
+        }
+      })
+    }
+  }, [currentUser]);
+
+  useEffect(() => {
+    if (isInitialLoad) {
+      setIsInitialLoad(false);
+      return;
+    }
+
+    if (chatWindowRef.current) {
+      const chatWindowHeight = chatWindowRef.current.clientHeight;
+      const windowHeight = window.innerHeight;
+      // メッセージリストの高さがチャットウィンドウの高さを超えたらスクロール
+      if (chatWindowHeight > windowHeight - 350) {
+        endOfMessagesRef.current?.scrollIntoView({behavior: 'smooth'});
+      }
+    }
+  }, [chats]);
+
+  const needDivider = (currentMs: number, prevMs: number | null) => {
+    if (prevMs === null) {
+      return true;
+    }
+
+    const currentDate = toJSTDateString(currentMs);
+    const prevDate = toJSTDateString(prevMs);
+
+    return currentDate !== prevDate;
+  };
+
+  const handleTextareaChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setMessage(e.target.value);
+  };
+
+  const addMessage = async () => {
+    if (!message || toUid && !currentUser?.isAdmin) {
+      return false;
+    }
+
+    setDisabled(true);
+
+    const documentId = toUid || currentUser?.uid;
+    const ref = doc(db, "chat", documentId as string);
+    const data = {
+      uid: currentUser?.uid,
+      message: encryptMessage(message),
+      timestamp: Timestamp.now()
+    };
+    try {
+      await setDoc(ref, {messages: arrayUnion(data)}, {merge: true});
+      setMessage("");
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setDisabled(false);
+    }
+  };
+
+  return (
+    <Box ref={chatWindowRef}>
+      {
+        chats && chats.map((tips: Chat, i: number) => {
+          const ms = tips.timestamp.seconds * 1000;
+          const time = toJSTTimeString(ms);
+
+          return (
+            <Box key={i}>
+              {
+                // 現在と前のタイムスタンプを使用してneedDividerを呼び出す
+                i === 0 || needDivider(ms, chats[i - 1].timestamp.seconds * 1000) ? <DateDivider ms={ms}/> : null
+              }
+              {
+                currentUser?.uid === tips.uid
+                  ? <OutgoingMessage time={time} message={decryptMessage(tips.message)}/>
+                  : <IncomingMessage time={time} message={decryptMessage(tips.message)}/>
+              }
+            </Box>
+          )
+        })
+      }
+      <Box ref={endOfMessagesRef}></Box>
+      <form>
+        <Center
+          pt={2}
+          pb={10}
+          position="fixed"
+          zIndex="sticky"
+          left={0}
+          width="100%"
+          bottom="90px"
+          bg="gray.50"
+        >
+          <HStack w="95%">
+            <Textarea value={message} onChange={handleTextareaChange} bg="white" borderRadius="0.5rem" size="sm"
+                      resize="none"/>
+            <Button colorScheme="blue" onClick={addMessage} isDisabled={disabled}>
+              <ReactIcon iconName="LuSend"/>
+            </Button>
+          </HStack>
+        </Center>
+      </form>
+    </Box>
+  );
+}
