@@ -53,7 +53,7 @@ const initItems = (isAdmin = false): Items => {
         currentKey: 'post',
       },
       users: {
-        name: 'ユーザー管理',
+        name: 'ユーザー',
         href: '/users',
         iconName: 'LuUser2',
         isBadge: false,
