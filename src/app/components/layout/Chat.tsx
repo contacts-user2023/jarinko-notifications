@@ -22,6 +22,7 @@ type Chat = {
   uid: string,
   timestamp: Timestamp,
   message: string,
+  received?: boolean,
 };
 
 export default function Chat({toUid}: Props) {
@@ -69,6 +70,14 @@ export default function Chat({toUid}: Props) {
   }, [currentUser]);
 
   useEffect(() => {
+    if(currentUser) {
+      const documentId = toUid || currentUser?.uid;
+      const rRef = doc(db, "chat_activities", documentId as string);
+      const chatReceived = currentUser?.isAdmin ? {guest: false} : {host: false};
+      setDoc(rRef, chatReceived).catch(e => console.log(e));
+      fetch(`/api/chat/${documentId}`).then(v => console.log(v.ok));
+    }
+
     if (isInitialLoad) {
       setIsInitialLoad(false);
       return;
@@ -113,8 +122,11 @@ export default function Chat({toUid}: Props) {
       message: encryptMessage(message),
       timestamp: Timestamp.now()
     };
+    const rRef = doc(db, "chat_activities", documentId as string);
+    const chatReceived = currentUser?.isAdmin ? {host: true} : {guest: true};
     try {
       await setDoc(ref, {messages: arrayUnion(data)}, {merge: true});
+      await setDoc(rRef, chatReceived);
       setMessage("");
     } catch (e) {
       console.log(e);
@@ -164,7 +176,7 @@ export default function Chat({toUid}: Props) {
               }
               {
                 currentUser?.uid === tips.uid
-                  ? <OutgoingMessage time={time} message={decryptMessage(tips.message)}/>
+                  ? <OutgoingMessage time={time} message={decryptMessage(tips.message)} received={!!tips?.received}/>
                   : <IncomingMessage time={time} message={decryptMessage(tips.message)}/>
               }
             </Box>

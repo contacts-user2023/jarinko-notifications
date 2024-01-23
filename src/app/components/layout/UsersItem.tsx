@@ -13,6 +13,7 @@ import {
 import NextLink from 'next/link'
 import ReactIcon from "@src/app/components/ui/ReactIcon";
 import UserActionButtonAvatar from "@src/app/components/ui/UserActionButtonAvatar";
+import ChatAvatarButton from "@src/app/components/ui/ChatAvatarButton";
 
 type Props = {
   name: string,
@@ -59,15 +60,7 @@ export default function UsersItem({name, is_admin, uid}: Props) {
         <HStack w="100%" spacing={4}>
           {
             !is_admin &&
-            <Avatar
-              variant="outline"
-              as="a"
-              href={`/chat/${uid}`}
-              bg="inherit"
-              color="green.400"
-              size="sm"
-              icon={<ReactIcon iconName="BsChatDots" boxSize={6}/>}
-            />
+            <ChatAvatarButton uid={uid}/>
           }
           <Spacer />
           <UserActionButtonAvatar

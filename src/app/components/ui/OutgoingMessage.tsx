@@ -2,14 +2,15 @@ import {Box, HStack, Text, VStack} from "@chakra-ui/react";
 
 type Props = {
   time: string,
-  message: string
+  message: string,
+  received: boolean,
 };
 
-export default function OutgoingMessage({time, message}: Props) {
+export default function OutgoingMessage({time, message, received}: Props) {
   return (
     <HStack justify="right" my={2}>
       <VStack maxW="45%" align="left" spacing={0}>
-        <Text fontSize="xs">{time}</Text>
+        <Text fontSize="xs">{time} {received ? '既読' : ''}</Text>
         <Box
           mr={3}
           p={2}

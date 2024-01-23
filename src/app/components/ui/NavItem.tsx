@@ -64,6 +64,28 @@ export default function NavItem(
           return () => unsubscribe();
         }
       })
+    // } else if (currentKey === 'users' && currentUser) {
+    //   onAuthStateChanged(auth, (user) => {
+    //     if (user) {
+    //       const unsubscribe = onSnapshot(doc(db, "chat_activities"), (docs) => {
+    //         const data = doc?.data();
+    //         setIsBadge(currentUser?.isAdmin ? data?.guest : data?.host);
+    //       });
+    //
+    //       return () => unsubscribe();
+    //     }
+    //   })
+    } else if (currentKey === 'chat' && currentUser) {
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          const unsubscribe = onSnapshot(doc(db, "chat_activities", currentUser?.uid), (doc) => {
+            const data = doc?.data();
+            setIsBadge(currentUser?.isAdmin ? data?.guest : data?.host);
+          });
+
+          return () => unsubscribe();
+        }
+      })
     }
     setCurrent(currentKey === pathname.split('/')[1]);
   }, [pathname, currentKey, currentUser]);
