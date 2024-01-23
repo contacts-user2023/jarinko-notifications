@@ -16,7 +16,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     const chatRef = adminDb.collection('chat').doc(params.id);
     const snapshot = await chatRef.get();
 
-    if (!snapshot.exists) {
+    if (snapshot.exists) {
       const messages  = snapshot?.data()?.messages;
       const updatedMessages = messages.map((msg: {uid: string}) => msg.uid !== session?.user?.uid ? { ...msg, received: true } : msg);
 
