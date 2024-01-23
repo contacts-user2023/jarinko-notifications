@@ -75,7 +75,7 @@ export default function Chat({toUid}: Props) {
       const rRef = doc(db, "chat_activities", documentId as string);
       const chatReceived = currentUser?.isAdmin ? {guest: false} : {host: false};
       setDoc(rRef, chatReceived).catch(e => console.log(e));
-      fetch(`/api/chat/${documentId}`).then(v => console.log(v.ok));
+      fetch(`/api/chat/${documentId}`).catch(e => console.log(e));
     }
 
     if (isInitialLoad) {

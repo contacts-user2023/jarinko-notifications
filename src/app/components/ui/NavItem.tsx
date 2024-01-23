@@ -14,7 +14,7 @@ import ReactIcon from "./ReactIcon";
 import {usePathname} from "next/navigation";
 import {useEffect, useState} from "react";
 import {Contact, listContacts} from "@src/app/libs/microcms";
-import {doc, DocumentData, onSnapshot} from "firebase/firestore";
+import {doc, collection, onSnapshot} from "firebase/firestore";
 import {db} from "@src/app/libs/firebaseConfig";
 import {getAuth, onAuthStateChanged} from "firebase/auth";
 
@@ -64,17 +64,24 @@ export default function NavItem(
           return () => unsubscribe();
         }
       })
-    // } else if (currentKey === 'users' && currentUser) {
-    //   onAuthStateChanged(auth, (user) => {
-    //     if (user) {
-    //       const unsubscribe = onSnapshot(doc(db, "chat_activities"), (docs) => {
-    //         const data = doc?.data();
-    //         setIsBadge(currentUser?.isAdmin ? data?.guest : data?.host);
-    //       });
-    //
-    //       return () => unsubscribe();
-    //     }
-    //   })
+    } else if (currentKey === 'users' && currentUser) {
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          const unsubscribe = onSnapshot(collection(db, "chat_activities"), (docs) => {
+            let hasNew = false;
+            docs.forEach((doc) => {
+              // 管理者権限限定メニューなのでguestのみ判定
+              if (doc?.data()?.guest) {
+                hasNew = true;
+                return;
+              }
+            });
+            setIsBadge(hasNew);
+          });
+
+          return () => unsubscribe();
+        }
+      })
     } else if (currentKey === 'chat' && currentUser) {
       onAuthStateChanged(auth, (user) => {
         if (user) {
