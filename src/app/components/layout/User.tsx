@@ -42,12 +42,6 @@ export default async function User({id}: Props) {
                 <Tbody>
                   <Tr>
                     <Td>
-                      <Text fontSize="xs">UID</Text>
-                      <Text>{user?.uid}</Text>
-                    </Td>
-                  </Tr>
-                  <Tr>
-                    <Td>
                       <Text fontSize="xs">ユーザー名</Text>
                       <Text>{user?.name}</Text>
                     </Td>
