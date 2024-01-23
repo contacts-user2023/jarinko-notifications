@@ -21,6 +21,7 @@ import {
   LuPencil,
   LuTrash2,
   LuSend,
+  LuChevronLeft,
 } from "react-icons/lu";
 import {
   IoMdLogIn,
@@ -62,6 +63,7 @@ const icon = {
   MdLockReset: MdLockReset,
   LuSend: LuSend,
   BsChatDots: BsChatDots,
+  LuChevronLeft: LuChevronLeft,
 };
 
 const RIcon = (iconName: string): typeof Icon => {

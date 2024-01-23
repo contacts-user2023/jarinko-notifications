@@ -1,10 +1,10 @@
 'use client';
 
-import {Box, Button, Textarea, HStack, Center, VStack, AbsoluteCenter,} from '@chakra-ui/react';
+import {Box, Button, Textarea, HStack, Center, Text, Spacer, Link} from '@chakra-ui/react';
 import {useSession} from "next-auth/react";
 import {useEffect, useRef, useState, ChangeEvent} from "react";
 import {getAuth, onAuthStateChanged} from "firebase/auth";
-import {arrayUnion, doc, DocumentData, onSnapshot, setDoc, Timestamp} from "firebase/firestore";
+import {arrayUnion, doc, DocumentData, getDoc, onSnapshot, setDoc, Timestamp} from "firebase/firestore";
 import {db} from "@src/app/libs/firebaseConfig";
 import {toJSTDateString, toJSTTimeString} from "@src/app/libs/dateFormatter";
 import DateDivider from "@src/app/components/ui/DateDivider";
@@ -12,6 +12,7 @@ import OutgoingMessage from "@src/app/components/ui/OutgoingMessage";
 import IncomingMessage from "@src/app/components/ui/IncomingMessage";
 import ReactIcon from "@src/app/components/ui/ReactIcon";
 import {decryptMessage, encryptMessage} from "@src/app/libs/encryption";
+import NextLink from "next/link";
 
 type Props = {
   toUid?: string
@@ -28,6 +29,7 @@ export default function Chat({toUid}: Props) {
   const currentUser = session?.user;
   const auth = getAuth();
 
+  const [partnerName, setPartnerName] = useState<string | null>(null);
   const [chats, setChats] = useState<Chat[]>([]);
   const [message, setMessage] = useState<string>("");
   const [disabled, setDisabled] = useState(false);
@@ -37,6 +39,15 @@ export default function Chat({toUid}: Props) {
   const [isInitialLoad, setIsInitialLoad] = useState(true); // 初期読み込みフラグ
 
   useEffect(() => {
+    if (!partnerName && currentUser) {
+      if (toUid && currentUser?.isAdmin) {
+        const docRef = doc(db, "users", toUid as string);
+        getDoc(docRef).then(doc => setPartnerName(doc?.data()?.name || 'unknown'));
+      } else {
+        setPartnerName('管理者');
+      }
+    }
+
     if (toUid && !currentUser?.isAdmin) {
       setChats([]);
     } else if (currentUser) {
@@ -114,6 +125,32 @@ export default function Chat({toUid}: Props) {
 
   return (
     <Box ref={chatWindowRef}>
+      <HStack
+        pt="75px"
+        pb={2}
+        px={4}
+        position="fixed"
+        zIndex="dropdown"
+        left={0}
+        width="100%"
+        top="0"
+        bg="gray.50"
+        borderBottom="1px"
+        borderColor="gray.200"
+      >
+        <Link
+          as={NextLink}
+          href={currentUser?.isAdmin ? "/users" : "/contacts"}
+          _hover={{
+            textDecoration: 'none',
+            opacity: '0.7'
+          }}
+        >
+          <ReactIcon iconName="LuChevronLeft"/>
+        </Link>
+        <Text>{partnerName}</Text>
+        <Spacer/>
+      </HStack>
       {
         chats && chats.map((tips: Chat, i: number) => {
           const ms = tips.timestamp.seconds * 1000;
@@ -138,13 +175,15 @@ export default function Chat({toUid}: Props) {
       <form>
         <Center
           pt={2}
-          pb={10}
+          pb="120px"
           position="fixed"
           zIndex="sticky"
           left={0}
           width="100%"
-          bottom="90px"
+          bottom="0"
           bg="gray.50"
+          borderTop="1px"
+          borderColor="gray.200"
         >
           <HStack w="95%">
             <Textarea value={message} onChange={handleTextareaChange} bg="white" borderRadius="0.5rem" size="sm"
