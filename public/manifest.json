@@ -3,7 +3,7 @@
     "background_color": "#fcfaf2",
     "display": "standalone",
     "scope": "/",
-    "start_url": "/",
+    "start_url": "/contacts",
     "name": "\u3058\u3083\u308a\u3093\u5b50\u30d1\u30ef\u30fc\u9023\u7d61\u5e33",
     "short_name": "\u3058\u3083\u308a\u3093\u5b50\u30d1\u30ef\u30fc\u9023\u7d61\u5e33",
     "description": "\u3058\u3083\u308a\u3093\u5b50\u30d1\u30ef\u30fc\u304b\u3089\u306e\u5168\u4f53\u9023\u7d61\u304c\u5c4a\u304d\u307e\u3059\u3002",
