@@ -1,7 +1,6 @@
 import type {NextAuthOptions, User} from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import {getAuth} from "firebase-admin/auth";
-import {adminDb} from "@src/app/libs/firebaseAdminConfig";
 
 type TokenUser = {
   uid?: string;
@@ -23,19 +22,12 @@ export const authOptions: NextAuthOptions = {
               return null;
             }
 
-            const docRef = adminDb.collection('users').doc(decoded?.uid);
-            const snap = await docRef.get();
-            const snapData = snap.data();
-            if(!snapData) {
-              return null;
-            }
-
             return {
               id: decoded.uid,
               uid: decoded.uid,
               emailVerified: decoded?.emailVerified,
-              is_admin: snapData?.is_admin,
-              name: snapData.name
+              is_admin: decoded?.photoURL === 'http://admin',
+              name: decoded.displayName
             };
           } catch (err) {
             console.error(err);

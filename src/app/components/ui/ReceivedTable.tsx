@@ -16,6 +16,7 @@ import {
 import {toJSTString} from "@src/app/libs/dateFormatter";
 import {getUser} from "@src/app/libs/serverUser";
 import {adminDb} from "@src/app/libs/firebaseAdminConfig";
+import {getAuth, UserRecord} from "firebase-admin/auth";
 
 type Props = {
   id: string,
@@ -30,11 +31,11 @@ export default async function ReceivedTable({id}: Props) {
   const snap = await docRef.get();
   const alreadyReads = snap?.data()?.received || [];
 
-  const usersRef = adminDb.collection('users');
-  const users = (await usersRef.get()).docs.map(v => v.data());
+  const auth = getAuth();
+  const users = (await auth.listUsers()).users;
 
-  const activeUserWithReceived = users.map((user: {[key: string]: string}) => {
-    let result: {name: string, receivedAt: null | string} = {name: user.name, receivedAt: null};
+  const activeUserWithReceived = users.map((user: UserRecord) => {
+    let result: {name?: string, receivedAt: null | string} = {name: user?.displayName, receivedAt: null};
     const alreadyRead = alreadyReads.find((v: {[key: string]: any}) => user.uid === v.uid);
     if(alreadyRead) {
       result.receivedAt = toJSTString(alreadyRead.timestamp.toMillis());

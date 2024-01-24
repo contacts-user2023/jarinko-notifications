@@ -3,16 +3,16 @@ import {
   ButtonGroup,
   VStack,
 } from '@chakra-ui/react';
-import {User} from "@src/app/libs/firebaseConfig";
-import {adminDb} from "@src/app/libs/firebaseAdminConfig";
 import UsersItem from "@src/app/components/layout/UsersItem";
 import ReactIcon from "@src/app/components/ui/ReactIcon";
+import {getAuth} from "firebase-admin/auth";
+import {User} from "@src/app/types/IUser";
 
 export default async function Users() {
-  const usersRef = adminDb.collection('users');
-  const users = (await usersRef.get()).docs.map(v => v.data());
+  const auth = getAuth();
+  const users = (await auth.listUsers()).users;
   users.sort((a, b) => {
-    if(a?.is_admin) {
+    if(a?.photoURL === 'http://admin') {
       return -1;
     }
     return 0;

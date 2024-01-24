@@ -8,20 +8,17 @@ import {
   Link,
   Divider,
   Spacer,
-  Avatar,
+  VStack,
 } from '@chakra-ui/react';
 import NextLink from 'next/link'
 import ReactIcon from "@src/app/components/ui/ReactIcon";
 import UserActionButtonAvatar from "@src/app/components/ui/UserActionButtonAvatar";
 import ChatAvatarButton from "@src/app/components/ui/ChatAvatarButton";
+import {User} from "@src/app/types/IUser";
 
-type Props = {
-  name: string,
-  is_admin?: boolean,
-  uid: string,
-};
+export default function UsersItem({displayName, photoURL, disabled, uid}: User) {
+  const is_admin = photoURL === 'http://admin';
 
-export default function UsersItem({name, is_admin, uid}: Props) {
   return (
     <Card
       w="100%"
@@ -42,14 +39,26 @@ export default function UsersItem({name, is_admin, uid}: Props) {
         <CardBody>
           <HStack justify="space-between">
             <HStack spacing={4} mb={1}>
-              <Badge
-                colorScheme={is_admin ? 'green' : 'yellow'}
-                minW="3rem"
-                style={{textAlign: 'center'}}
-              >
-                {is_admin ? '管理者' : '一 般'}
-              </Badge>
-              <Text>{name}</Text>
+              <VStack spacing={0}>
+                <Badge
+                  colorScheme={is_admin ? 'green' : 'yellow'}
+                  minW="3rem"
+                  style={{textAlign: 'center'}}
+                >
+                  {is_admin ? '管理者' : '一 般'}
+                </Badge>
+                {
+                  disabled &&
+                  <Badge
+                    colorScheme='gray'
+                    minW="3rem"
+                    style={{textAlign: 'center'}}
+                  >
+                    無 効
+                  </Badge>
+                }
+              </VStack>
+              <Text>{displayName}</Text>
             </HStack>
             <ReactIcon iconName="LuChevronRight"/>
           </HStack>
@@ -59,28 +68,52 @@ export default function UsersItem({name, is_admin, uid}: Props) {
       <CardFooter py={3}>
         <HStack w="100%" spacing={4}>
           {
-            !is_admin &&
+            !is_admin && !disabled &&
             <ChatAvatarButton uid={uid}/>
           }
-          <Spacer />
-          <UserActionButtonAvatar
-            name={name}
-            uid={uid}
-            actionType="reset"
-            iconName="MdLockReset"
-            body={`メールアドレス宛に送信します。\nメール本文内のURLからパスワード再設定を行ってください。`}
-            title="パスワード再設定メール送信"
-          />
+          <Spacer/>
+          {
+            !disabled &&
+            <UserActionButtonAvatar
+              name={displayName}
+              uid={uid}
+              actionType="reset"
+              iconName="MdLockReset"
+              body={`メールアドレス宛に送信します。\nメール本文内のURLからパスワード再設定を行ってください。`}
+              title="パスワード再設定メール送信"
+            />
+          }
           {
             !is_admin &&
-            <UserActionButtonAvatar
-              name={name}
-              uid={uid}
-              actionType="delete"
-              iconName="LuTrash2"
-              body={`既読情報もあわせて削除されます。\n削除された情報は復元できません。\n削除してもよろしいですか？`}
-              title="ユーザー削除"
-            />
+            (
+              disabled
+                ? <>
+                  <UserActionButtonAvatar
+                    name={displayName}
+                    uid={uid}
+                    actionType="activate"
+                    iconName="LuLightbulb"
+                    body={`有効化したユーザーはログイン可能になります。\n有効化してもよろしいですか？`}
+                    title="ユーザー有効化"
+                  />
+                  <UserActionButtonAvatar
+                    name={displayName}
+                    uid={uid}
+                    actionType="delete"
+                    iconName="LuTrash2"
+                    body={`既読情報、チャット内容が見られなくなります。\n削除された情報は復元できません。\n削除してもよろしいですか？`}
+                    title="ユーザー削除"
+                  />
+                </>
+                : <UserActionButtonAvatar
+                  name={displayName}
+                  uid={uid}
+                  actionType="deactivate"
+                  iconName="LuLightbulbOff"
+                  body={`無効化したユーザーはログインができなくなります。\n無効化してもよろしいですか？`}
+                  title="ユーザーの無効化"
+                />
+            )
           }
         </HStack>
       </CardFooter>

@@ -84,6 +84,46 @@ export default function UserActionButtonAvatar(
           errorToast(`メール送信失敗`);
         }
         break;
+      case 'deactivate':
+        try {
+          const getRes = await fetch(`/api/users/${uid}`, {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({"disabled": true})
+          });
+
+          if(getRes.ok) {
+            successToast(`ユーザー無効化成功`);
+            router.refresh();
+          } else {
+            console.log(getRes);
+            errorToast(`ユーザー無効化失敗`);
+          }
+        } catch (e) {
+          console.log(e);
+          errorToast(`ユーザー無効化失敗`);
+        }
+        break;
+      case 'activate':
+        try {
+          const getRes = await fetch(`/api/users/${uid}`, {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({"disabled": false})
+          });
+
+          if(getRes.ok) {
+            successToast(`ユーザー有効化成功`);
+            router.refresh();
+          } else {
+            console.log(getRes);
+            errorToast(`ユーザー有効化失敗`);
+          }
+        } catch (e) {
+          console.log(e);
+          errorToast(`ユーザー有効化失敗`);
+        }
+        break;
       default:
         console.log('actionType is nothing');
     }
@@ -99,7 +139,7 @@ export default function UserActionButtonAvatar(
         bg="inherit"
         color="red.500"
         size="sm"
-        icon={<ReactIcon iconName={iconName} boxSize={6}/>}
+        icon={<ReactIcon iconName={iconName} boxSize={iconName === 'MdLockReset' ? 7 : 6}/>}
       />
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay/>

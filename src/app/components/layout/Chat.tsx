@@ -42,8 +42,10 @@ export default function Chat({toUid}: Props) {
   useEffect(() => {
     if (!partnerName && currentUser) {
       if (toUid && currentUser?.isAdmin) {
-        const docRef = doc(db, "users", toUid as string);
-        getDoc(docRef).then(doc => setPartnerName(doc?.data()?.name || 'unknown'));
+        fetch(`/api/users/${toUid}`).then(async (v) => {
+          const user = await v.json();
+          setPartnerName(user?.displayName || 'unknown');
+        });
       } else {
         setPartnerName('管理者');
       }

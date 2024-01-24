@@ -22,6 +22,8 @@ import {
   LuTrash2,
   LuSend,
   LuChevronLeft,
+  LuLightbulbOff,
+  LuLightbulb,
 } from "react-icons/lu";
 import {
   IoMdLogIn,
@@ -64,6 +66,8 @@ const icon = {
   LuSend: LuSend,
   BsChatDots: BsChatDots,
   LuChevronLeft: LuChevronLeft,
+  LuLightbulbOff: LuLightbulbOff,
+  LuLightbulb: LuLightbulb,
 };
 
 const RIcon = (iconName: string): typeof Icon => {

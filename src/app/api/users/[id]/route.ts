@@ -22,3 +22,27 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     return NextResponse.json(e, {status: 500});
   }
 }
+
+export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+  const session = await getServerSession(authOptions);
+
+  if(!session?.user?.isAdmin) {
+    return NextResponse.json("Unauthorized", {status: 401});
+  }
+
+  try {
+    // authデータ作成
+    const auth = getAuth();
+    const data = await req.json();
+    const newUser = await auth.updateUser(params.id, data);
+
+    return NextResponse.json(newUser?.uid, {status: 200});
+  } catch(e: any) {
+    console.log(e);
+    if (e?.code) {
+      return NextResponse.json(e.code, { status: 500 });
+    } else {
+      return NextResponse.json('Internal Server Error', { status: 500 });
+    }
+  }
+}
