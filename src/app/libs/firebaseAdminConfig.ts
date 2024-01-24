@@ -3,8 +3,11 @@ import { getFirestore } from "firebase-admin/firestore";
 import {getFirebaseAdminConfig} from "@/config/config";
 const serviceAccount = getFirebaseAdminConfig();
 
-const firebaseAdmin = getApps().length === 0 ? initializeApp({
-  credential: cert(serviceAccount)
-}) : getApp();
+export const initAdminApp = () => {
+  return getApps().length === 0 ? initializeApp({
+    credential: cert(serviceAccount)
+  }) : getApp();
+};
+const firebaseAdmin = initAdminApp();
 
 export const adminDb = getFirestore(firebaseAdmin);

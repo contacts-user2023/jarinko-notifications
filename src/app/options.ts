@@ -1,6 +1,7 @@
 import type {NextAuthOptions, User} from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import {getAuth} from "firebase-admin/auth";
+import {initAdminApp} from "@src/app/libs/firebaseAdminConfig";
 
 type TokenUser = {
   uid?: string;
@@ -16,18 +17,20 @@ export const authOptions: NextAuthOptions = {
       authorize: async ({idToken}: any, _req) => {
         if (idToken) {
           try {
+            initAdminApp();
             const auth = await getAuth();
             const decoded = await auth.verifyIdToken(idToken);
             if(!decoded) {
               return null;
             }
+            const user = await auth.getUser(decoded.uid);
 
             return {
-              id: decoded.uid,
-              uid: decoded.uid,
-              emailVerified: decoded?.emailVerified,
-              is_admin: decoded?.photoURL === 'http://admin',
-              name: decoded.displayName
+              id: user.uid,
+              uid: user.uid,
+              emailVerified: user?.emailVerified,
+              is_admin: user?.photoURL === 'http://admin',
+              name: user.displayName
             };
           } catch (err) {
             console.error(err);
