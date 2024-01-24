@@ -3,8 +3,8 @@
 import {Box, Button, Textarea, HStack, Center, Text, Spacer, Link} from '@chakra-ui/react';
 import {useSession} from "next-auth/react";
 import {useEffect, useRef, useState, ChangeEvent} from "react";
-import {getAuth, onAuthStateChanged} from "firebase/auth";
-import {arrayUnion, doc, DocumentData, getDoc, onSnapshot, setDoc, Timestamp} from "firebase/firestore";
+import {getAuth} from "firebase/auth";
+import {arrayUnion, doc, onSnapshot, setDoc, Timestamp} from "firebase/firestore";
 import {db} from "@src/app/libs/firebaseConfig";
 import {toJSTDateString, toJSTTimeString} from "@src/app/libs/dateFormatter";
 import DateDivider from "@src/app/components/ui/DateDivider";
@@ -40,43 +40,40 @@ export default function Chat({toUid}: Props) {
   const [isInitialLoad, setIsInitialLoad] = useState(true); // 初期読み込みフラグ
 
   useEffect(() => {
-    if (!partnerName && currentUser) {
-      if (toUid && currentUser?.isAdmin) {
-        fetch(`/api/users/${toUid}`).then(async (v) => {
-          const user = await v.json();
+    const fetchPartnerName = async () => {
+      if (!partnerName && currentUser) {
+        if (toUid && currentUser.isAdmin) {
+          const response = await fetch(`/api/users/${toUid}`);
+          const user = await response.json();
           setPartnerName(user?.displayName || 'unknown');
-        });
-      } else {
-        setPartnerName('管理者');
+        } else {
+          setPartnerName('管理者');
+        }
       }
-    }
+    };
+    fetchPartnerName();
 
     if (toUid && !currentUser?.isAdmin) {
       setChats([]);
     } else if (currentUser) {
-      onAuthStateChanged(auth, (user) => {
-        if (user) {
-          const documentId = toUid || user.uid;
-          const unsubscribe = onSnapshot(doc(db, "chat", documentId), (doc) => {
-            if (doc?.data()) {
-              // @ts-ignore
-              setChats(doc.data()?.messages);
-            } else {
-            }
-          });
-
-          return () => unsubscribe();
+      const documentId = toUid || currentUser?.uid;
+      const unsubscribe = onSnapshot(doc(db, "chat", documentId), (doc) => {
+        if (doc?.data()) {
+          // @ts-ignore
+          setChats(doc.data()?.messages);
         }
-      })
+      });
+
+      return () => unsubscribe();
     }
   }, [currentUser]);
 
   useEffect(() => {
-    if(currentUser) {
+    if (currentUser) {
       const documentId = toUid || currentUser?.uid;
       const rRef = doc(db, "chat_activities", documentId as string);
       const chatReceived = currentUser?.isAdmin ? {guest: false} : {host: false};
-      setDoc(rRef, chatReceived).catch(e => console.log(e));
+      setDoc(rRef, chatReceived, {merge: true}).catch(e => console.log(e));
       fetch(`/api/chat/${documentId}`).catch(e => console.log(e));
     }
 
@@ -128,7 +125,7 @@ export default function Chat({toUid}: Props) {
     const chatReceived = currentUser?.isAdmin ? {host: true} : {guest: true};
     try {
       await setDoc(ref, {messages: arrayUnion(data)}, {merge: true});
-      await setDoc(rRef, chatReceived);
+      await setDoc(rRef, chatReceived, {merge: true});
       setMessage("");
     } catch (e) {
       console.log(e);
