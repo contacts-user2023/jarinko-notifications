@@ -47,7 +47,7 @@ export default async function Contacts({children}: Props) {
           ))
         }
       </VStack>
-      {/*<FCMSubscribe />*/}
+      <FCMSubscribe />
     </>
   )
 }

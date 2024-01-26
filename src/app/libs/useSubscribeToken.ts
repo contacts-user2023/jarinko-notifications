@@ -12,7 +12,7 @@ export const useSubscribeToken = () => {
   const [processed, setProcessed] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== undefined && currentUser && firebaseApp && processed) {
+    if (typeof window !== undefined && currentUser && firebaseApp && !processed) {
       try {
         const messaging = getMessaging();
         const methodCalledTime = localStorage.getItem('methodCalledTime');
