@@ -11,7 +11,7 @@ export async function POST(req: NextRequest, {params}: { params: { id: string } 
   const {token} = await req.json();
   const uid = params.id;
 
-  if (!session?.user || session?.user?.uid !== uid) {
+  if (!session?.user) {
     return NextResponse.json("Unauthorized", {status: 401});
   }
   if (!token) {
