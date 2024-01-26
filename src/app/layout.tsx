@@ -6,7 +6,6 @@ import Footer from "@src/app/components/layout/Footer";
 import {Metadata, Viewport} from "next";
 import '@fontsource/zen-maru-gothic/300.css';
 import '@fontsource/zen-maru-gothic/500.css';
-import PushCodeScripts from "@src/app/components/ui/PushCodeScripts";
 
 export const metadata: Metadata = {
   title: 'じゃりん子パワー連絡帳',
@@ -37,7 +36,6 @@ export default function RootLayout({children}: { children: React.ReactNode }) {
       <Footer/>
       <FootNav/>
     </Providers>
-    <PushCodeScripts/>
     </body>
     </html>
   )

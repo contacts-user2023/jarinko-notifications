@@ -1,14 +1,14 @@
 import {
-  Container,
   VStack,
 } from '@chakra-ui/react';
 import {Contact, listContacts} from "@src/app/libs/microcms";
 import {toJSTString} from "@src/app/libs/dateFormatter";
-import {ReactNode, Suspense} from "react";
+import {ReactNode} from "react";
 import {getUser} from "@src/app/libs/serverUser";
 import {redirect} from 'next/navigation'
 import ContactsItem from "@src/app/components/layout/ContactsItem";
 import {adminDb} from "@src/app/libs/firebaseAdminConfig";
+import FCMSubscribe from "@src/app/components/ui/FCMSubscribe";
 
 type Props = {
   children?: ReactNode
@@ -33,18 +33,21 @@ export default async function Contacts({children}: Props) {
   });
 
   return (
-    <VStack>
-      {
-        contacts?.contents && contacts.contents.map((contact: Contact, i) => (
-          <ContactsItem
-            key={i}
-            alreadyRead={receives.includes(contact.id as string)}
-            contactId={contact.id}
-            postedAt={toJSTString(contact.publishedAt)}
-            title={contact.title}
-          />
-        ))
-      }
-    </VStack>
+    <>
+      <VStack>
+        {
+          contacts?.contents && contacts.contents.map((contact: Contact, i) => (
+            <ContactsItem
+              key={i}
+              alreadyRead={receives.includes(contact.id as string)}
+              contactId={contact.id}
+              postedAt={toJSTString(contact.publishedAt)}
+              title={contact.title}
+            />
+          ))
+        }
+      </VStack>
+      {/*<FCMSubscribe />*/}
+    </>
   )
 }

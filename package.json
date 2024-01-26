@@ -21,6 +21,7 @@
     "firebase-admin": "^12.0.0",
     "formik": "^2.4.5",
     "framer-motion": "^10.16.16",
+    "google-auth-library": "^9.4.2",
     "html-react-parser": "^5.1.0",
     "microcms-js-sdk": "^2.7.0",
     "next": "14.0.4",

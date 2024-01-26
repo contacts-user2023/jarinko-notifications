@@ -28,6 +28,10 @@ export const getFirebaseConfig = (): FirebaseConfig => {
   }
 };
 
+export const getFCMPublicKey = () => {
+  return process.env.NEXT_PUBLIC_FIREBASE_CLOUD_MESSAGING_PUBLIC_KEY || '';
+};
+
 type FirebaseAdminConfig = {
   type: string
   project_id: string
