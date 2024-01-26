@@ -9,7 +9,6 @@ import {
   sendPasswordResetEmail,
   getRedirectResult,
 } from "firebase/auth";
-import { getMessaging } from "firebase/messaging";
 import {getFirebaseConfig} from "@/config/config";
 
 export type User = {
@@ -28,7 +27,6 @@ if (typeof window !== undefined && !getApps().length) {
 }
 
 const db = getFirestore();
-const messaging = getMessaging();
 
 export {
   firebaseApp,
@@ -39,5 +37,4 @@ export {
   sendPasswordResetEmail,
   getRedirectResult,
   db,
-  messaging,
 };
