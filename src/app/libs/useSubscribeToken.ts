@@ -1,7 +1,7 @@
 'use client';
 
 import {useEffect, useState} from "react";
-import {subscribeToken} from "@src/app/libs/messaging";
+import {subscribeToken, unsubscribeToken} from "@src/app/libs/messaging";
 import {useSession} from "next-auth/react";
 import {getMessaging} from "firebase/messaging";
 import {firebaseApp} from "@src/app/libs/firebaseConfig";
@@ -14,14 +14,25 @@ export const useSubscribeToken = () => {
   useEffect(() => {
     if (typeof window !== undefined && currentUser && firebaseApp && !processed) {
       try {
-        const messaging = getMessaging();
         const methodCalledTime = localStorage.getItem('methodCalledTime');
         const currentTime = new Date().getTime();
+        const methodCallUid = localStorage.getItem('methodCallUid');
 
-        if (!methodCalledTime || currentTime - parseInt(methodCalledTime) > 2592000000) { // 2592000000ミリ秒 = 30日
-          subscribeToken(messaging, currentUser?.uid).then(result => {
-            if (result) {
+        let shouldSubscribe = !methodCalledTime || currentTime - parseInt(methodCalledTime) > 2592000000; // 2592000000ミリ秒 = 30日
+
+        if(methodCallUid && currentUser?.uid !== methodCallUid) {
+          shouldSubscribe = true;
+          const methodCallToken = localStorage.getItem('methodCallToken') || '';
+          unsubscribeToken(methodCallUid, methodCallToken);
+        }
+
+        if(shouldSubscribe) {
+          const messaging = getMessaging();
+          subscribeToken(messaging, currentUser?.uid).then(token => {
+            if (token) {
               localStorage.setItem('methodCalledTime', currentTime.toString());
+              localStorage.setItem('methodCallUid', currentUser?.uid);
+              localStorage.setItem('methodCallToken', token || '');
             }
           });
         }

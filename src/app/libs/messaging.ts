@@ -13,8 +13,27 @@ export const subscribeToken = async (messaging: Messaging, uid: string) => {
     });
     if(!api.ok) {
       console.log(await api.json());
+      return null;
+    }
+
+    return token;
+  } catch(e) {
+    console.log(e);
+    return false;
+  }
+};
+
+export const unsubscribeToken = async (uid: string, token: string) => {
+  try {
+    const api = await fetch(`/api/fcm_subscribed_tokens/delete/${uid}`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({"token": token})
+    });
+    if(!api.ok) {
+      console.log(await api.json());
     } else {
-      console.log('Set token ok!');
+      console.log('delete token ok!');
     }
 
     return api.ok;
