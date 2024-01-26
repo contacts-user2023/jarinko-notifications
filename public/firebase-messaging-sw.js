@@ -1,6 +1,5 @@
-importScripts('https://www.gstatic.com/firebasejs/10.0.1/firebase-app.js');
-importScripts('https://www.gstatic.com/firebasejs/10.0.1/firebase-messaging.js');
-importScripts('../config/config.js');
+importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js');
+importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js');importScripts('../config/config.js');
 // Firebase の初期化
 const firebaseConfig = getFirebaseConfig();
 
