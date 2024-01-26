@@ -1,8 +1,16 @@
-importScripts('https://www.gstatic.com/firebasejs/9.2.0/firebase-app-compat.js');
-importScripts('https://www.gstatic.com/firebasejs/9.2.0/firebase-messaging-compat.js');
+import {getFirebaseConfig} from "../config/config";
 
-import {getMessaging} from 'firebase/messaging/sw';
-const messaging = getMessaging();
+importScripts('https://www.gstatic.com/firebasejs/10.0.1/firebase-app.js');
+importScripts('https://www.gstatic.com/firebasejs/10.0.1/firebase-messaging.js');
+
+// Firebase の初期化
+const firebaseConfig = getFirebaseConfig();
+
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+
+const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage((payload) => {
   console.log('メッセージが受信されました:', payload);
