@@ -126,6 +126,11 @@ export default function Chat({toUid}: Props) {
     try {
       await setDoc(ref, {messages: arrayUnion(data)}, {merge: true});
       await setDoc(rRef, chatReceived, {merge: true});
+      await fetch(`/api/push/${documentId}`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({msg: message}),
+      });
       setMessage("");
     } catch (e) {
       console.log(e);
