@@ -2,6 +2,8 @@ import {headers} from 'next/headers';
 import {NextRequest, NextResponse} from 'next/server';
 import {getContactById} from "../../libs/microcms";
 import {adminMessaging} from "@src/app/libs/firebaseAdminConfig";
+import {getAuth} from "firebase-admin/auth";
+import {Message} from "firebase-admin/messaging";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -48,16 +50,27 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    const auth = getAuth();
+    const users = (await auth.listUsers()).users;
+    // TODO sendAllの上限は500、分割送信を検討
+    const uids = users.map(user => user?.uid);
     const contact = await getContactById(id);
     const payload = {
       notification: {
         title: '新しいお知らせがあります',
         body: contact.title,
-        icon: 'https://jarinko-notifications.vercel.app/icon-512x512.png',
-        click_action: `https://jarinko-notifications.vercel.app/contacts/${contact.id}`
+        image: 'https://jarinko-notifications.vercel.app/icon-512x512.png',
+      },
+      webpush: {
+        fcmOptions: {
+          link: `https://jarinko-notifications.vercel.app/contacts/${contact.id}`
+        }
       }
     };
-    const result = await adminMessaging.sendToTopic('all', payload);
+    const messages: Message[] = uids.map(uid => {
+      return {...payload, topic: uid}
+    });
+    const result = await adminMessaging.sendAll(messages);
 
     return NextResponse.json(result, {...resInit, status: 200});
   } catch (e: any) {
