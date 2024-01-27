@@ -9,16 +9,16 @@ import {adminMessaging} from "@src/app/libs/firebaseAdminConfig";
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
   const session = await getServerSession(authOptions);
   const auth = getAuth();
+
+  if(!session?.user || !session?.user?.isAdmin && session?.user?.uid !== params.id) {
+    return NextResponse.json("Unauthorized", {status: 401});
+  }
   const users = (await auth.listUsers()).users;
   const adminUids = users.map(user => {
     if(user?.photoURL === 'http://admin') {
       return user?.uid;
     }
-  });
-
-  if(!session?.user || !session?.user?.isAdmin && !adminUids.includes(params.id)) {
-    return NextResponse.json("Unauthorized", {status: 401});
-  }
+  }).filter(e => e);
 
   let {msg} = await req.json();
   const maxLength = 20;
@@ -34,10 +34,10 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       },
       webpush: {
         fcmOptions: {
-          link: `https://jarinko-notifications.vercel.app/chat/${session?.user?.isAdmin ? params.id : ''}`
+          link: `https://jarinko-notifications.vercel.app/chat${session?.user?.isAdmin ? `/${params.id}` : ''}`
         }
       },
-      topic: params.id
+      topic: session?.user?.isAdmin ? params.id : adminUids[0] as string
     };
 
     const result = await adminMessaging.send(message);
