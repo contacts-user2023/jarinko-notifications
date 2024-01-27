@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
         click_action: `https://jarinko-notifications.vercel.app/contacts/${contact.id}`
       }
     };
-    const result = await adminMessaging.messaging().sendToTopic('all', payload);
+    const result = await adminMessaging.sendToTopic('all', payload);
 
     return NextResponse.json(result, {...resInit, status: 200});
   } catch (e: any) {
