@@ -34,7 +34,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       },
       webpush: {
         fcmOptions: {
-          link: `https://jarinko-notifications.vercel.app/chat${session?.user?.isAdmin ? `/${params.id}` : ''}`
+          link: `https://jarinko-notifications.vercel.app/chat${session?.user?.isAdmin ? '' : `/${params.id}`}`
         }
       },
       topic: session?.user?.isAdmin ? params.id : adminUids[0] as string
