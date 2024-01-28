@@ -124,14 +124,14 @@ export default function Chat({toUid}: Props) {
     const rRef = doc(db, "chat_activities", documentId as string);
     const chatReceived = currentUser?.isAdmin ? {host: true} : {guest: true};
     try {
-      await setDoc(ref, {messages: arrayUnion(data)}, {merge: true});
+      const addChat = await setDoc(ref, {messages: arrayUnion(data)}, {merge: true});
       await setDoc(rRef, chatReceived, {merge: true});
-      await fetch(`/api/push/${documentId}`, {
+      setMessage("");
+      fetch(`/api/push/${documentId}`, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({msg: message}),
       });
-      setMessage("");
     } catch (e) {
       console.log(e);
     } finally {
