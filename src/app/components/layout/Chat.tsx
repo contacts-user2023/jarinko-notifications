@@ -2,8 +2,7 @@
 
 import {Box, Button, Textarea, HStack, Center, Text, Spacer, Link} from '@chakra-ui/react';
 import {useSession} from "next-auth/react";
-import {useEffect, useRef, useState, ChangeEvent} from "react";
-import {getAuth} from "firebase/auth";
+import {useEffect, useRef, useState, ChangeEvent, useCallback} from "react";
 import {arrayUnion, doc, onSnapshot, setDoc, Timestamp} from "firebase/firestore";
 import {db} from "@src/app/libs/firebaseConfig";
 import {toJSTDateString, toJSTTimeString} from "@src/app/libs/dateFormatter";
@@ -28,7 +27,6 @@ type Chat = {
 export default function Chat({toUid}: Props) {
   const {data: session} = useSession();
   const currentUser = session?.user;
-  const auth = getAuth();
 
   const [partnerName, setPartnerName] = useState<string | null>(null);
   const [chats, setChats] = useState<Chat[]>([]);
@@ -39,6 +37,44 @@ export default function Chat({toUid}: Props) {
   const endOfMessagesRef = useRef<HTMLDivElement>(null);
   const chatWindowRef = useRef<HTMLDivElement>(null); // チャットウィンドウのためのref
   const [isInitialLoad, setIsInitialLoad] = useState(true); // 初期読み込みフラグ
+  const [showScrollButton, setShowScrollButton] = useState(false);
+
+  const scrollWindow = () => {
+    if (!chats?.length) {
+      return;
+    }
+
+    if (chatWindowRef.current) {
+      const chatWindowHeight = chatWindowRef.current.clientHeight;
+      const windowHeight = window.innerHeight;
+      // メッセージリストの高さがチャットウィンドウの高さを超えたらスクロール
+      if (chatWindowHeight > windowHeight - 350) {
+        endOfMessagesRef.current?.scrollIntoView({behavior: 'smooth'});
+      }
+    }
+  };
+
+  const onScroll = useCallback(() => {
+    if (chatWindowRef?.current) {
+      const {pageYOffset} = window;
+      setShowScrollButton(pageYOffset < chatWindowRef.current.clientHeight - 1000);
+    }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("scroll", onScroll, {passive: true});
+    // remove event on unmount to prevent a memory leak with the cleanup
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (chats?.length > 0 && isInitialLoad) {
+      scrollWindow();
+      setIsInitialLoad(false);
+    }
+  }, [chats]);
 
   useEffect(() => {
     const fetchPartnerName = async () => {
@@ -90,20 +126,6 @@ export default function Chat({toUid}: Props) {
     };
     handleVisibilityChange();
     document.addEventListener("visibilitychange", handleVisibilityChange);
-
-    if (isInitialLoad) {
-      setIsInitialLoad(false);
-      return;
-    }
-
-    if (chatWindowRef.current) {
-      const chatWindowHeight = chatWindowRef.current.clientHeight;
-      const windowHeight = window.innerHeight;
-      // メッセージリストの高さがチャットウィンドウの高さを超えたらスクロール
-      if (chatWindowHeight > windowHeight - 350) {
-        endOfMessagesRef.current?.scrollIntoView({behavior: 'smooth'});
-      }
-    }
 
     return () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
@@ -228,6 +250,15 @@ export default function Chat({toUid}: Props) {
           </HStack>
         </Center>
       </form>
+      {
+        showScrollButton &&
+        <HStack position="sticky" bottom="240px" right={0}>
+          <Spacer />
+          <Box p={2} pb={1} borderRadius="0.5rem" bg="blue.400" color="white" as="span" onClick={scrollWindow}>
+            <ReactIcon boxSize={6} iconName="LuArrowDownToLine"/>
+          </Box>
+        </HStack>
+      }
     </Box>
   );
 }
