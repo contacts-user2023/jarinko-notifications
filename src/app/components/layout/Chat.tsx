@@ -252,12 +252,20 @@ export default function Chat({toUid}: Props) {
       </form>
       {
         showScrollButton &&
-        <HStack position="sticky" bottom="240px" right={0}>
-          <Spacer />
-          <Box p={2} pb={1} borderRadius="0.5rem" bg="blue.400" color="white" as="span" onClick={scrollWindow}>
-            <ReactIcon boxSize={6} iconName="LuArrowDownToLine"/>
-          </Box>
-        </HStack>
+        <Box
+          position="fixed"
+          right="1rem"
+          bottom="240px"
+          p={2}
+          pb={1}
+          borderRadius="0.5rem"
+          bg="blue.400"
+          color="white"
+          as="span"
+          onClick={scrollWindow}
+        >
+          <ReactIcon boxSize={6} iconName="LuArrowDownToLine"/>
+        </Box>
       }
     </Box>
   );
