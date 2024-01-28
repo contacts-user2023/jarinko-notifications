@@ -32,6 +32,7 @@ export default function Chat({toUid}: Props) {
 
   const [partnerName, setPartnerName] = useState<string | null>(null);
   const [chats, setChats] = useState<Chat[]>([]);
+  const [chatActivities, setChatActivities] = useState(false);
   const [message, setMessage] = useState<string>("");
   const [disabled, setDisabled] = useState(false);
 
@@ -63,19 +64,28 @@ export default function Chat({toUid}: Props) {
           setChats(doc.data()?.messages);
         }
       });
+      const unsubscribe2 = onSnapshot(doc(db, "chat_activities", documentId), (doc) => {
+        if (doc?.data()) {
+          // @ts-ignore
+          setChatActivities(currentUser?.isAdmin ? doc.data()?.guest : doc.data()?.host);
+        }
+      });
 
-      return () => unsubscribe();
+      return () => {
+        unsubscribe();
+        unsubscribe2();
+      }
     }
   }, [currentUser]);
 
   useEffect(() => {
     const handleVisibilityChange = () => {
-      if (document.visibilityState !== "hidden" && currentUser) {
+      if (document.visibilityState !== "hidden" && currentUser && chatActivities) {
         const documentId = toUid || currentUser?.uid;
+        fetch(`/api/chat/${documentId}`).catch(e => console.log(e));
         const rRef = doc(db, "chat_activities", documentId as string);
         const chatReceived = currentUser?.isAdmin ? {guest: false} : {host: false};
         setDoc(rRef, chatReceived, {merge: true}).catch(e => console.log(e));
-        fetch(`/api/chat/${documentId}`).catch(e => console.log(e));
       }
     };
     handleVisibilityChange();
@@ -98,7 +108,7 @@ export default function Chat({toUid}: Props) {
     return () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, [chats]);
+  }, [chatActivities]);
 
   const needDivider = (currentMs: number, prevMs: number | null) => {
     if (prevMs === null) {
