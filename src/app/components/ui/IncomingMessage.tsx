@@ -15,8 +15,8 @@ export default function IncomingMessage({time, message}: Props) {
           p={2}
           fontSize="sm"
           w="100%"
-          bg='gray.500'
-          color="white"
+          bg='orange.100'
+          color="orange.800"
           borderRadius="0.5rem"
           position="relative"
           _before={{
@@ -27,7 +27,7 @@ export default function IncomingMessage({time, message}: Props) {
             marginTop: "-0.5rem",
             border: "0.5rem solid transparent",
             borderRight: "0.5rem solid",
-            borderRightColor: "gray.500",
+            borderRightColor: "orange.100",
           }}
         >
           {message.split("\n").map((v, i) => (<Text key={i}>{v}</Text>))}
