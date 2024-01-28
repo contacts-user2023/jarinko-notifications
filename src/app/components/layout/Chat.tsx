@@ -78,6 +78,7 @@ export default function Chat({toUid}: Props) {
         fetch(`/api/chat/${documentId}`).catch(e => console.log(e));
       }
     };
+    handleVisibilityChange();
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
     if (isInitialLoad) {
