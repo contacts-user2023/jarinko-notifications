@@ -49,7 +49,7 @@ export default function Chat({toUid}: Props) {
       const windowHeight = window.innerHeight;
       // メッセージリストの高さがチャットウィンドウの高さを超えたらスクロール
       if (chatWindowHeight > windowHeight - 350) {
-        endOfMessagesRef.current?.scrollIntoView({behavior: 'smooth'});
+        endOfMessagesRef.current?.scrollIntoView();
       }
     }
   };
