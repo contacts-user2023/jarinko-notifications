@@ -69,13 +69,16 @@ export default function Chat({toUid}: Props) {
   }, [currentUser]);
 
   useEffect(() => {
-    if (document.visibilityState !== "hidden" && currentUser) {
-      const documentId = toUid || currentUser?.uid;
-      const rRef = doc(db, "chat_activities", documentId as string);
-      const chatReceived = currentUser?.isAdmin ? {guest: false} : {host: false};
-      setDoc(rRef, chatReceived, {merge: true}).catch(e => console.log(e));
-      fetch(`/api/chat/${documentId}`).catch(e => console.log(e));
-    }
+    const handleVisibilityChange = () => {
+      if (document.visibilityState !== "hidden" && currentUser) {
+        const documentId = toUid || currentUser?.uid;
+        const rRef = doc(db, "chat_activities", documentId as string);
+        const chatReceived = currentUser?.isAdmin ? {guest: false} : {host: false};
+        setDoc(rRef, chatReceived, {merge: true}).catch(e => console.log(e));
+        fetch(`/api/chat/${documentId}`).catch(e => console.log(e));
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
 
     if (isInitialLoad) {
       setIsInitialLoad(false);
@@ -90,6 +93,10 @@ export default function Chat({toUid}: Props) {
         endOfMessagesRef.current?.scrollIntoView({behavior: 'smooth'});
       }
     }
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
   }, [chats]);
 
   const needDivider = (currentMs: number, prevMs: number | null) => {
