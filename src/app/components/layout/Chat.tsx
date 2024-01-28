@@ -69,7 +69,7 @@ export default function Chat({toUid}: Props) {
   }, [currentUser]);
 
   useEffect(() => {
-    if (currentUser) {
+    if (document.visibilityState !== "hidden" && currentUser) {
       const documentId = toUid || currentUser?.uid;
       const rRef = doc(db, "chat_activities", documentId as string);
       const chatReceived = currentUser?.isAdmin ? {guest: false} : {host: false};
