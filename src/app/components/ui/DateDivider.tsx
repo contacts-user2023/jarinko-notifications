@@ -1,4 +1,4 @@
-import {AbsoluteCenter, Box, Divider} from "@chakra-ui/react";
+import {AbsoluteCenter, Box, Divider, Center, Tag } from "@chakra-ui/react";
 import {toJSTDateString} from "@src/app/libs/dateFormatter";
 
 type Props = {
@@ -7,11 +7,10 @@ type Props = {
 
 export default function DateDivider({ms}: Props) {
   return (
-    <Box position='relative' p={10}>
-      <Divider />
-      <AbsoluteCenter bg='white' px={2} fontSize="xs">
-        {toJSTDateString(ms)}
-      </AbsoluteCenter>
+    <Box position="sticky" zIndex="sticky" top="110px">
+      <Center my={10}>
+        <Tag px={3} size="sm">{toJSTDateString(ms)}</Tag>
+      </Center>
     </Box>
   )
 }

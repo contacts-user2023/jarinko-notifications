@@ -2,7 +2,7 @@
 
 import {Box, Button, Textarea, HStack, Center, Text, Spacer, Link} from '@chakra-ui/react';
 import {useSession} from "next-auth/react";
-import {useEffect, useRef, useState, ChangeEvent, useCallback} from "react";
+import {useEffect, useRef, useState, ChangeEvent, useCallback, Fragment} from "react";
 import {arrayUnion, doc, onSnapshot, setDoc, Timestamp} from "firebase/firestore";
 import {db} from "@src/app/libs/firebaseConfig";
 import {toJSTDateString, toJSTTimeString} from "@src/app/libs/dateFormatter";
@@ -213,17 +213,19 @@ export default function Chat({toUid}: Props) {
           const time = toJSTTimeString(ms);
 
           return (
-            <Box key={i}>
+            <Fragment key={i}>
               {
                 // 現在と前のタイムスタンプを使用してneedDividerを呼び出す
                 i === 0 || needDivider(ms, chats[i - 1].timestamp.seconds * 1000) ? <DateDivider ms={ms}/> : null
               }
-              {
-                currentUser?.uid === tips.uid
-                  ? <OutgoingMessage time={time} message={decryptMessage(tips.message)} received={!!tips?.received}/>
-                  : <IncomingMessage time={time} message={decryptMessage(tips.message)}/>
-              }
-            </Box>
+              <Box>
+                {
+                  currentUser?.uid === tips.uid
+                    ? <OutgoingMessage time={time} message={decryptMessage(tips.message)} received={!!tips?.received}/>
+                    : <IncomingMessage time={time} message={decryptMessage(tips.message)}/>
+                }
+              </Box>
+            </Fragment>
           )
         })
       }
