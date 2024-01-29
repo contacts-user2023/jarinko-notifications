@@ -2,7 +2,7 @@
 import {extendTheme} from "@chakra-ui/react"
 import {ChakraProvider} from '@chakra-ui/react'
 import SessionProvider from "@src/app/SessionProvider";
-import {useFCMMessage} from "@src/app/libs/useFCMGetMessage";
+import {useFCMMessage} from "@src/app/hooks/useFCMGetMessage";
 
 export function Providers({children}: { children: React.ReactNode }) {
   useFCMMessage();

@@ -1,5 +1,5 @@
 import Chat from "@src/app/components/layout/Chat";
 
 export default function Page () {
-  return <Chat/>
+  return <Chat partnerName="システム管理者" />
 }

@@ -7,7 +7,7 @@ import {db} from "@src/app/libs/firebaseConfig";
 import {doc, Timestamp, arrayUnion, setDoc, onSnapshot} from "firebase/firestore";
 import {useSession} from "next-auth/react";
 import {getAuth, onAuthStateChanged} from "firebase/auth";
-import {useErrorToast, useSuccessToast} from "@src/app/libs/useCustomToast";
+import {useErrorToast, useSuccessToast} from "@src/app/hooks/useCustomToast";
 
 type Props = {
   contactId: string,

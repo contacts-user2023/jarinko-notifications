@@ -25,7 +25,7 @@ import ReactIcon from "@src/app/components/ui/ReactIcon";
 import {useState} from "react";
 import BackButton from "@src/app/components/ui/BackButton";
 import {useRouter} from "next/navigation";
-import {useErrorToast, useSuccessToast} from "@src/app/libs/useCustomToast";
+import {useErrorToast, useSuccessToast} from "@src/app/hooks/useCustomToast";
 import {toStringErrorCode} from "@src/app/libs/toStringErrorCode";
 
 type Data = {

@@ -1,6 +1,6 @@
 'use client';
 
-import {useSubscribeToken} from "@src/app/libs/useSubscribeToken";
+import {useSubscribeToken} from "@src/app/hooks/useSubscribeToken";
 
 export default function FCMSubscribe() {
   // console.log(Notification.permission);

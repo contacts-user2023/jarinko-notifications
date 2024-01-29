@@ -5,7 +5,7 @@ import ReactIcon from "./ReactIcon";
 import {signOut} from "next-auth/react";
 import {getAuth, signOut as firebaseSignOut} from "@src/app/libs/firebaseConfig";
 import {useState} from "react";
-import {useSuccessToast} from "@src/app/libs/useCustomToast";
+import {useSuccessToast} from "@src/app/hooks/useCustomToast";
 
 export default function LogOutButton() {
   const successToast = useSuccessToast();

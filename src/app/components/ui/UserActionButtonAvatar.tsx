@@ -18,7 +18,7 @@ import ReactIcon from "@src/app/components/ui/ReactIcon";
 import {useState} from "react";
 import {useRouter} from "next/navigation";
 import {getAuth, sendPasswordResetEmail} from "@src/app/libs/firebaseConfig";
-import {useErrorToast, useSuccessToast} from "@src/app/libs/useCustomToast";
+import {useErrorToast, useSuccessToast} from "@src/app/hooks/useCustomToast";
 
 type Props = {
   actionType: string,

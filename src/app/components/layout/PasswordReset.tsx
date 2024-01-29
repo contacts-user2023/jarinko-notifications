@@ -29,7 +29,7 @@ import ReactIcon from "@src/app/components/ui/ReactIcon";
 import {useEffect, useState} from "react";
 import BackButton from "@src/app/components/ui/BackButton";
 import {useRouter} from "next/navigation";
-import {useErrorToast, useSuccessToast} from "@src/app/libs/useCustomToast";
+import {useErrorToast, useSuccessToast} from "@src/app/hooks/useCustomToast";
 import {toStringErrorCode} from "@src/app/libs/toStringErrorCode";
 import {useSession, signOut} from "next-auth/react";
 

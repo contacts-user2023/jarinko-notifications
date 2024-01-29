@@ -19,7 +19,7 @@ import ReactIcon from "@src/app/components/ui/ReactIcon";
 import {useState} from "react";
 import {PreloadResources} from "@src/app/preload-resources";
 import { signIn as signInByNextAuth } from "next-auth/react";
-import {useErrorToast, useSuccessToast} from "@src/app/libs/useCustomToast";
+import {useErrorToast, useSuccessToast} from "@src/app/hooks/useCustomToast";
 import NextLink from "next/link";
 
 type Data = {
