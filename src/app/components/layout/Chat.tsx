@@ -110,9 +110,9 @@ export default function Chat({toUid, partnerName}: Props) {
         <Center
           position="fixed"
           right="1rem"
-          bottom="240px"
-          p={2}
-          pb={1}
+          bottom={hasNew ? "225px" : "240px"}
+          minW="2.7rem"
+          py={2}
           borderRadius="0.5rem"
           bg={hasNew ? "red.300" : "blue.400"}
           color="white"
@@ -121,7 +121,7 @@ export default function Chat({toUid, partnerName}: Props) {
         >
           <VStack spacing={0}>
             <ReactIcon boxSize={6} iconName="LuArrowDownToLine"/>
-            {hasNew && <Text>new!</Text>}
+            {hasNew && <Text lineHeight={1}>new!</Text>}
           </VStack>
         </Center>
       }
