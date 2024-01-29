@@ -1,8 +1,8 @@
 'use client';
 
-import {Box, Button, Textarea, HStack, VStack, Center, Text, Spacer, Link} from '@chakra-ui/react';
+import {Box, HStack, VStack, Center, Text, Spacer, Link} from '@chakra-ui/react';
 import {useSession} from "next-auth/react";
-import {useEffect, useRef, useState, ChangeEvent, useCallback, Fragment} from "react";
+import {useEffect, useRef, useState, useCallback, Fragment} from "react";
 import {arrayUnion, doc, onSnapshot, setDoc, Timestamp} from "firebase/firestore";
 import {db} from "@src/app/libs/firebaseConfig";
 import {toJSTDateString, toJSTTimeString} from "@src/app/libs/dateFormatter";
@@ -12,6 +12,7 @@ import IncomingMessage from "@src/app/components/ui/IncomingMessage";
 import ReactIcon from "@src/app/components/ui/ReactIcon";
 import {decryptMessage, encryptMessage} from "@src/app/libs/encryption";
 import NextLink from "next/link";
+import ChatInput from "@src/app/components/ui/ChatInput";
 
 type Props = {
   toUid?: string
@@ -31,8 +32,6 @@ export default function Chat({toUid}: Props) {
   const [partnerName, setPartnerName] = useState<string | null>(null);
   const [chats, setChats] = useState<Chat[]>([]);
   const [chatActivities, setChatActivities] = useState(false);
-  const [message, setMessage] = useState<string>("");
-  const [disabled, setDisabled] = useState(false);
   const [hasNew, setHasNew] = useState(false);
 
   const endOfMessagesRef = useRef<HTMLDivElement>(null);
@@ -81,7 +80,7 @@ export default function Chat({toUid}: Props) {
   }, []);
 
   useEffect(() => {
-    if(!showScrollButton && hasNew) {
+    if (!showScrollButton && hasNew) {
       receivedChat();
     }
   }, [showScrollButton]);
@@ -160,16 +159,10 @@ export default function Chat({toUid}: Props) {
     return currentDate !== prevDate;
   };
 
-  const handleTextareaChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    setMessage(e.target.value);
-  };
-
-  const addMessage = async () => {
-    if (!message || toUid && !currentUser?.isAdmin) {
+  const addMessage = async (message: string) => {
+    if (toUid && !currentUser?.isAdmin) {
       return false;
     }
-
-    setDisabled(true);
 
     const documentId = toUid || currentUser?.uid;
     const ref = doc(db, "chat", documentId as string);
@@ -180,20 +173,14 @@ export default function Chat({toUid}: Props) {
     };
     const rRef = doc(db, "chat_activities", documentId as string);
     const chatReceived = currentUser?.isAdmin ? {host: true} : {guest: true};
-    try {
-      const addChat = await setDoc(ref, {messages: arrayUnion(data)}, {merge: true});
-      await setDoc(rRef, chatReceived, {merge: true});
-      setMessage("");
-      fetch(`/api/push/${documentId}`, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({msg: message}),
-      });
-    } catch (e) {
-      console.log(e);
-    } finally {
-      setDisabled(false);
-    }
+    const addChat = await setDoc(ref, {messages: arrayUnion(data)}, {merge: true});
+    await setDoc(rRef, chatReceived, {merge: true});
+    scrollWindow();
+    fetch(`/api/push/${documentId}`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({msg: message}),
+    });
   };
 
   return (
@@ -248,26 +235,7 @@ export default function Chat({toUid}: Props) {
       }
       <Box ref={endOfMessagesRef}></Box>
       <form>
-        <Center
-          pt={2}
-          pb="120px"
-          position="fixed"
-          zIndex="sticky"
-          left={0}
-          width="100%"
-          bottom="0"
-          bg="gray.50"
-          borderTop="1px"
-          borderColor="gray.200"
-        >
-          <HStack w="95%">
-            <Textarea value={message} onChange={handleTextareaChange} bg="white" borderRadius="0.5rem" size="sm"
-                      resize="none"/>
-            <Button colorScheme="blue" onClick={addMessage} isDisabled={disabled}>
-              <ReactIcon iconName="LuSend"/>
-            </Button>
-          </HStack>
-        </Center>
+        <ChatInput onSendMessage={addMessage}/>
       </form>
       {
         showScrollButton &&
