@@ -1,6 +1,6 @@
 'use client';
 
-import {Box, Button, Textarea, HStack, Center, Text, Spacer, Link} from '@chakra-ui/react';
+import {Box, Button, Textarea, HStack, VStack, Center, Text, Spacer, Link} from '@chakra-ui/react';
 import {useSession} from "next-auth/react";
 import {useEffect, useRef, useState, ChangeEvent, useCallback, Fragment} from "react";
 import {arrayUnion, doc, onSnapshot, setDoc, Timestamp} from "firebase/firestore";
@@ -33,6 +33,7 @@ export default function Chat({toUid}: Props) {
   const [chatActivities, setChatActivities] = useState(false);
   const [message, setMessage] = useState<string>("");
   const [disabled, setDisabled] = useState(false);
+  const [hasNew, setHasNew] = useState(false);
 
   const endOfMessagesRef = useRef<HTMLDivElement>(null);
   const chatWindowRef = useRef<HTMLDivElement>(null); // チャットウィンドウのためのref
@@ -54,6 +55,16 @@ export default function Chat({toUid}: Props) {
     }
   };
 
+  const receivedChat = () => {
+    scrollWindow();
+    const documentId = toUid || currentUser?.uid;
+    fetch(`/api/chat/${documentId}`).catch(e => console.log(e));
+    const rRef = doc(db, "chat_activities", documentId as string);
+    const chatReceived = currentUser?.isAdmin ? {guest: false} : {host: false};
+    setDoc(rRef, chatReceived, {merge: true}).catch(e => console.log(e));
+    setHasNew(false);
+  };
+
   const onScroll = useCallback(() => {
     if (chatWindowRef?.current) {
       const {pageYOffset} = window;
@@ -68,6 +79,12 @@ export default function Chat({toUid}: Props) {
       window.removeEventListener("scroll", onScroll);
     }
   }, []);
+
+  useEffect(() => {
+    if(!showScrollButton && hasNew) {
+      receivedChat();
+    }
+  }, [showScrollButton]);
 
   useEffect(() => {
     if (chats?.length > 0 && isInitialLoad) {
@@ -117,11 +134,11 @@ export default function Chat({toUid}: Props) {
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.visibilityState !== "hidden" && currentUser && chatActivities) {
-        const documentId = toUid || currentUser?.uid;
-        fetch(`/api/chat/${documentId}`).catch(e => console.log(e));
-        const rRef = doc(db, "chat_activities", documentId as string);
-        const chatReceived = currentUser?.isAdmin ? {guest: false} : {host: false};
-        setDoc(rRef, chatReceived, {merge: true}).catch(e => console.log(e));
+        if (!showScrollButton) {
+          receivedChat();
+        } else {
+          setHasNew(true);
+        }
       }
     };
     handleVisibilityChange();
@@ -254,20 +271,23 @@ export default function Chat({toUid}: Props) {
       </form>
       {
         showScrollButton &&
-        <Box
+        <Center
           position="fixed"
           right="1rem"
           bottom="240px"
           p={2}
           pb={1}
           borderRadius="0.5rem"
-          bg="blue.400"
+          bg={hasNew ? "red.300" : "blue.400"}
           color="white"
           as="span"
           onClick={scrollWindow}
         >
-          <ReactIcon boxSize={6} iconName="LuArrowDownToLine"/>
-        </Box>
+          <VStack spacing={0}>
+            <ReactIcon boxSize={6} iconName="LuArrowDownToLine"/>
+            {hasNew && <Text>new!</Text>}
+          </VStack>
+        </Center>
       }
     </Box>
   );
