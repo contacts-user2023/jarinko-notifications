@@ -1,6 +1,6 @@
 'use client';
 
-import {Box, HStack, VStack, Center, Text, Spacer, Link} from '@chakra-ui/react';
+import {Box, HStack, Text, Spacer, Link} from '@chakra-ui/react';
 import {Fragment} from "react";
 import {Timestamp} from "firebase/firestore";
 import {toJSTDateString, toJSTTimeString} from "@src/app/libs/dateFormatter";
@@ -13,6 +13,7 @@ import NextLink from "next/link";
 import ChatInput from "@src/app/components/ui/ChatInput";
 import useChatMessages from "@src/app/hooks/useChatMessages";
 import {useSession} from "next-auth/react";
+import ScrollBottomButton from "@src/app/components/ui/ScrollBottomButton";
 
 type Props = {
   toUid?: string,
@@ -90,41 +91,24 @@ export default function Chat({toUid, partnerName}: Props) {
                 // 現在と前のタイムスタンプを使用してneedDividerを呼び出す
                 i === 0 || needDivider(ms, chats[i - 1].timestamp.seconds * 1000) ? <DateDivider ms={ms}/> : null
               }
-              <Box>
-                {
-                  currentUser?.uid === tips.uid
-                    ? <OutgoingMessage time={time} message={decryptMessage(tips.message)} received={!!tips?.received}/>
-                    : <IncomingMessage time={time} message={decryptMessage(tips.message)}/>
-                }
-              </Box>
+              {
+                currentUser?.uid === tips.uid
+                  ? <OutgoingMessage time={time} message={decryptMessage(tips.message)} received={!!tips?.received}/>
+                  : <IncomingMessage time={time} message={decryptMessage(tips.message)}/>
+              }
             </Fragment>
           )
         })
       }
-      <Box ref={endOfMessagesRef}></Box>
       <form>
         <ChatInput onSendMessage={addMessage}/>
       </form>
-      {
-        showScrollButton &&
-        <Center
-          position="fixed"
-          right="1rem"
-          bottom={hasNew ? "225px" : "240px"}
-          minW="2.7rem"
-          py={2}
-          borderRadius="0.5rem"
-          bg={hasNew ? "red.300" : "blue.400"}
-          color="white"
-          as="span"
-          onClick={scrollWindow}
-        >
-          <VStack spacing={0}>
-            <ReactIcon boxSize={6} iconName="LuArrowDownToLine"/>
-            {hasNew && <Text lineHeight={1}>new!</Text>}
-          </VStack>
-        </Center>
-      }
+      <ScrollBottomButton
+        endOfMessagesRef={endOfMessagesRef}
+        showScrollButton={showScrollButton}
+        hasNew={hasNew}
+        scrollWindow={scrollWindow}
+      />
     </Box>
   );
 }
