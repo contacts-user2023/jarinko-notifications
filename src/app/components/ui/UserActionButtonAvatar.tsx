@@ -19,6 +19,7 @@ import {useState} from "react";
 import {useRouter} from "next/navigation";
 import {getAuth, sendPasswordResetEmail} from "@src/app/libs/firebaseConfig";
 import {useErrorToast, useSuccessToast} from "@src/app/hooks/useCustomToast";
+import {useToggleVisibility} from "@src/app/contexts/ToggleVisibilityContext";
 
 type Props = {
   actionType: string,
@@ -27,6 +28,7 @@ type Props = {
   iconName: string,
   title: string,
   body: string,
+  email: string,
 };
 
 export default function UserActionButtonAvatar(
@@ -36,8 +38,10 @@ export default function UserActionButtonAvatar(
     uid,
     iconName,
     body,
-    title
+    title,
+    email,
   }: Props) {
+  const {isVisible} = useToggleVisibility();
   const {isOpen, onOpen, onClose} = useDisclosure();
   const [isDisabled, setIsDisabled] = useState(false);
   const successToast = useSuccessToast();
@@ -57,7 +61,7 @@ export default function UserActionButtonAvatar(
           body: JSON.stringify({uid: uid}),
         });
 
-        if(deleteRes?.ok) {
+        if (deleteRes?.ok) {
           successToast('ユーザー削除成功');
         } else {
           errorToast('ユーザー削除失敗');
@@ -92,7 +96,7 @@ export default function UserActionButtonAvatar(
             body: JSON.stringify({"disabled": true})
           });
 
-          if(getRes.ok) {
+          if (getRes.ok) {
             successToast(`ユーザー無効化成功`);
             router.refresh();
           } else {
@@ -112,7 +116,7 @@ export default function UserActionButtonAvatar(
             body: JSON.stringify({"disabled": false})
           });
 
-          if(getRes.ok) {
+          if (getRes.ok) {
             successToast(`ユーザー有効化成功`);
             router.refresh();
           } else {
@@ -132,44 +136,49 @@ export default function UserActionButtonAvatar(
 
   return (
     <>
-      <Avatar
-        variant="outline"
-        as="button"
-        onClick={onOpen}
-        bg="inherit"
-        color="red.500"
-        size="sm"
-        icon={<ReactIcon iconName={iconName} boxSize={iconName === 'MdLockReset' ? 7 : 6}/>}
-      />
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay/>
-        <ModalContent>
-          <ModalHeader>{title}</ModalHeader>
-          <ModalCloseButton/>
-          <ModalBody>
-            <Text pb={4}>ユーザー名: {name}</Text>
-            {Body}
-          </ModalBody>
-          <ModalFooter>
-            <ButtonGroup w="100%" mt={10} spacing={4} justifyContent="right">
-              <Button
-                variant='outline'
-                colorScheme="gray"
-                onClick={onClose}
-              >閉じる
-              </Button>
-              <Button
-                colorScheme='blue'
-                mr={3}
-                onClick={handleAction}
-                isDisabled={isDisabled}
-              >
-                実行
-              </Button>
-            </ButtonGroup>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      {
+        isVisible &&
+        <>
+          <Avatar
+            variant="outline"
+            as="button"
+            onClick={onOpen}
+            bg="inherit"
+            color="red.500"
+            size="sm"
+            icon={<ReactIcon iconName={iconName} boxSize={iconName === 'MdLockReset' ? 7 : 6}/>}
+          />
+          < Modal isOpen={isOpen} onClose={onClose}>
+            <ModalOverlay/>
+            <ModalContent>
+              <ModalHeader>{title}</ModalHeader>
+              <ModalCloseButton/>
+              <ModalBody>
+                <Text pb={4}>ユーザー名: {name}<br/>メールアドレス: {email}</Text>
+                {Body}
+              </ModalBody>
+              <ModalFooter>
+                <ButtonGroup w="100%" mt={10} spacing={4} justifyContent="right">
+                  <Button
+                    variant='outline'
+                    colorScheme="gray"
+                    onClick={onClose}
+                  >閉じる
+                  </Button>
+                  <Button
+                    colorScheme='blue'
+                    mr={3}
+                    onClick={handleAction}
+                    isDisabled={isDisabled}
+                  >
+                    実行
+                  </Button>
+                </ButtonGroup>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
+        </>
+      }
     </>
   )
 }

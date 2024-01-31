@@ -2,13 +2,21 @@ import {
   Button,
   ButtonGroup,
   VStack,
-  Tabs, TabList, TabPanels, Tab, TabPanel
+  HStack,
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
+  Spacer,
 } from '@chakra-ui/react';
 import UsersItem from "@src/app/components/layout/UsersItem";
 import ReactIcon from "@src/app/components/ui/ReactIcon";
 import {getAuth} from "firebase-admin/auth";
 import {User} from "@src/app/types/IUser";
 import ResponsiveText from "@src/app/components/ui/ResponsiveText";
+import ToggleVisibilityButton from "@src/app/components/ui/ToggleVisibilityButton";
+import {ToggleVisibilityProvider} from "@src/app/contexts/ToggleVisibilityContext";
 
 export default async function Users() {
   const auth = getAuth();
@@ -21,7 +29,11 @@ export default async function Users() {
   });
 
   return (
-    <>
+    <ToggleVisibilityProvider>
+      <HStack mb={4}>
+        <Spacer/>
+        <ToggleVisibilityButton/>
+      </HStack>
       <ButtonGroup w="100%" mb={4} spacing={4} justifyContent="right">
         <Button
           type="submit"
@@ -32,39 +44,40 @@ export default async function Users() {
           rightIcon={<ReactIcon iconName='LuPencil'/>}
         >新規作成</Button>
       </ButtonGroup>
-      <Tabs variant='enclosed' defaultIndex={1}>
-        <TabList>
-          <Tab>すべて</Tab>
-          <Tab><ResponsiveText text="有効" responsiveText="なユーザー" boundary="sm"/></Tab>
-          <Tab><ResponsiveText text="無効" responsiveText="なユーザー" boundary="sm"/></Tab>
-        </TabList>
 
-        <TabPanels>
-          <TabPanel>
-            <VStack>
-              {users && (users as User[])?.map((user, i) => <UsersItem key={i} {...user} />)}
-            </VStack>
-          </TabPanel>
-          <TabPanel>
-            <VStack>
-              {users && (users as User[])?.map((user, i) => {
-                if (!user.disabled) {
-                  return <UsersItem key={i} {...user} />
-                }
-              })}
-            </VStack>
-          </TabPanel>
-          <TabPanel>
-            <VStack>
-              {users && (users as User[])?.map((user, i) => {
-                if (user.disabled) {
-                  return <UsersItem key={i} {...user} />
-                }
-              })}
-            </VStack>
-          </TabPanel>
-        </TabPanels>
-      </Tabs>
-    </>
+        <Tabs variant='enclosed' defaultIndex={1}>
+          <TabList>
+            <Tab>すべて</Tab>
+            <Tab><ResponsiveText text="有効" responsiveText="なユーザー" boundary="sm"/></Tab>
+            <Tab><ResponsiveText text="無効" responsiveText="なユーザー" boundary="sm"/></Tab>
+          </TabList>
+
+          <TabPanels>
+            <TabPanel>
+              <VStack>
+                {users && (users as User[])?.map((user, i) => <UsersItem key={i} {...user} />)}
+              </VStack>
+            </TabPanel>
+            <TabPanel>
+              <VStack>
+                {users && (users as User[])?.map((user, i) => {
+                  if (!user.disabled) {
+                    return <UsersItem key={i} {...user} />
+                  }
+                })}
+              </VStack>
+            </TabPanel>
+            <TabPanel>
+              <VStack>
+                {users && (users as User[])?.map((user, i) => {
+                  if (user.disabled) {
+                    return <UsersItem key={i} {...user} />
+                  }
+                })}
+              </VStack>
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
+      </ToggleVisibilityProvider>
   )
 }

@@ -16,7 +16,7 @@ import UserActionButtonAvatar from "@src/app/components/ui/UserActionButtonAvata
 import ChatAvatarButton from "@src/app/components/ui/ChatAvatarButton";
 import {User} from "@src/app/types/IUser";
 
-export default function UsersItem({displayName, photoURL, disabled, uid}: User) {
+export default function UsersItem({displayName, photoURL, disabled, uid, email}: User) {
   const is_admin = photoURL === 'http://admin';
 
   return (
@@ -65,7 +65,7 @@ export default function UsersItem({displayName, photoURL, disabled, uid}: User) 
         </CardBody>
       </Link>
       <Divider color="#ddd"/>
-      <CardFooter py={3}>
+      <CardFooter py={3} minH="3.5rem">
         <HStack w="100%" spacing={4}>
           {
             !is_admin && !disabled &&
@@ -76,6 +76,7 @@ export default function UsersItem({displayName, photoURL, disabled, uid}: User) 
             !disabled &&
             <UserActionButtonAvatar
               name={displayName}
+              email={email}
               uid={uid}
               actionType="reset"
               iconName="MdLockReset"
@@ -90,6 +91,7 @@ export default function UsersItem({displayName, photoURL, disabled, uid}: User) 
                 ? <>
                   <UserActionButtonAvatar
                     name={displayName}
+                    email={email}
                     uid={uid}
                     actionType="activate"
                     iconName="LuLightbulb"
@@ -98,6 +100,7 @@ export default function UsersItem({displayName, photoURL, disabled, uid}: User) 
                   />
                   <UserActionButtonAvatar
                     name={displayName}
+                    email={email}
                     uid={uid}
                     actionType="delete"
                     iconName="LuTrash2"
@@ -107,6 +110,7 @@ export default function UsersItem({displayName, photoURL, disabled, uid}: User) 
                 </>
                 : <UserActionButtonAvatar
                   name={displayName}
+                  email={email}
                   uid={uid}
                   actionType="deactivate"
                   iconName="LuLightbulbOff"

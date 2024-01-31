@@ -30,9 +30,10 @@ import {
   IoMdLogIn,
   IoMdLogOut,
 } from "react-icons/io";
-import { FaRegQuestionCircle } from "react-icons/fa";
-import { MdLockReset } from "react-icons/md";
-import { BsChatDots } from "react-icons/bs";
+import {FaRegQuestionCircle} from "react-icons/fa";
+import {MdLockReset} from "react-icons/md";
+import {BsChatDots} from "react-icons/bs";
+import {PiToggleRightFill, PiToggleLeft} from "react-icons/pi";
 import {Icon} from "@chakra-ui/react";
 
 type IconName = string;
@@ -70,6 +71,8 @@ const icon = {
   LuLightbulbOff: LuLightbulbOff,
   LuLightbulb: LuLightbulb,
   LuArrowDownToLine: LuArrowDownToLine,
+  PiToggleRightFill,
+  PiToggleLeft,
 };
 
 const RIcon = (iconName: string): typeof Icon => {
