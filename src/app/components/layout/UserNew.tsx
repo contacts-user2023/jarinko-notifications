@@ -7,7 +7,7 @@ import {
   VStack,
   InputGroup,
   Input,
-  InputLeftAddon,
+  InputLeftElement,
   ButtonGroup,
   Button,
   Modal,
@@ -87,11 +87,12 @@ export default function UserNew() {
           <VStack spacing={4}>
             <VStack spacing={1} w="100%" align="left">
               <InputGroup>
-                <InputLeftAddon>
+                <InputLeftElement>
                   <ReactIcon iconName="LuUser2"/>
-                </InputLeftAddon>
+                </InputLeftElement>
                 <Input
                   type='text'
+                  variant='flushed'
                   placeholder='ユーザー名'
                   {...register('name', {
                     required: 'ユーザー名を入力してください',
@@ -105,11 +106,12 @@ export default function UserNew() {
             </VStack>
             <VStack spacing={1} w="100%" align="left">
               <InputGroup>
-                <InputLeftAddon>
+                <InputLeftElement>
                   <ReactIcon iconName="LuMail"/>
-                </InputLeftAddon>
+                </InputLeftElement>
                 <Input
                   type='email'
+                  variant='flushed'
                   placeholder='メールアドレス'
                   {...register('email', {required: 'メールアドレスを入力してください'})}
                 />
