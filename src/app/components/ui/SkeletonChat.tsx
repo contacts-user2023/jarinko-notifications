@@ -16,7 +16,7 @@ export default function SkeletonChat() {
         <SkeletonText startColor="green.100" endColor="green.500" skeletonHeight={2} noOfLines={1} w="5rem"/>
       </OutgoingMessage>
       <IncomingMessage message="" time="">
-        <SkeletonText startColor="orange.100" endColor="orange.500" skeletonHeight={2} noOfLines={1} w="10rem"/>
+        <SkeletonText startColor="orange.100" endColor="orange.500" skeletonHeight={2} noOfLines={1} w="8rem"/>
       </IncomingMessage>
     </>
   );
