@@ -10,7 +10,7 @@ type Props = {
 
 export default function Page({params}: Props) {
   return (
-    <Suspense fallback={<SkeletonCard/>}>
+    <Suspense fallback={<SkeletonCard length={1} type="single"/>}>
       <Contact id={params.id}/>
     </Suspense>
   );
