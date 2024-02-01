@@ -22,7 +22,7 @@ const useChatMessages = ({toUid}: UseChatMessagesProps) => {
   const currentUser = session?.user;
 
   const [partnerName, setPartnerName] = useState<string | null>(null);
-  const [chats, setChats] = useState<Chat[]>([]);
+  const [chats, setChats] = useState<Chat[] | null>(null);
   const [chatActivities, setChatActivities] = useState(false);
   const [hasNew, setHasNew] = useState(false);
 
@@ -64,7 +64,7 @@ const useChatMessages = ({toUid}: UseChatMessagesProps) => {
   }, []);
 
   const handleInitialLoad = useCallback(() => {
-    if (chats?.length > 0 && isInitialLoad) {
+    if (chats && chats?.length > 0 && isInitialLoad) {
       scrollWindow();
       setIsInitialLoad(false);
     }
@@ -119,7 +119,7 @@ const useChatMessages = ({toUid}: UseChatMessagesProps) => {
       const unsubscribe = onSnapshot(doc(db, "chat", documentId), (doc) => {
         if (doc?.data()) {
           // @ts-ignore
-          setChats(doc.data()?.messages);
+          setChats(doc.data()?.messages || []);
         }
       });
       const unsubscribe2 = onSnapshot(doc(db, "chat_activities", documentId), (doc) => {

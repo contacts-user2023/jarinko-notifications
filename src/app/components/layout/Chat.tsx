@@ -14,6 +14,7 @@ import ChatInput from "@src/app/components/ui/ChatInput";
 import useChatMessages from "@src/app/hooks/useChatMessages";
 import {useSession} from "next-auth/react";
 import ScrollBottomButton from "@src/app/components/ui/ScrollBottomButton";
+import SkeletonChat from "@src/app/components/ui/SkeletonChat";
 
 type Props = {
   toUid?: string,
@@ -81,24 +82,26 @@ export default function Chat({toUid, partnerName}: Props) {
         <Spacer/>
       </HStack>
       {
-        chats && chats.map((tips: Chat, i: number) => {
-          const ms = tips.timestamp.seconds * 1000;
-          const time = toJSTTimeString(ms);
+        !chats?.length && chats?.length !== 0 ?
+          <SkeletonChat/> :
+          chats && chats.map((tips: Chat, i: number) => {
+            const ms = tips.timestamp.seconds * 1000;
+            const time = toJSTTimeString(ms);
 
-          return (
-            <Fragment key={i}>
-              {
-                // 現在と前のタイムスタンプを使用してneedDividerを呼び出す
-                i === 0 || needDivider(ms, chats[i - 1].timestamp.seconds * 1000) ? <DateDivider ms={ms}/> : null
-              }
-              {
-                currentUser?.uid === tips.uid
-                  ? <OutgoingMessage time={time} message={decryptMessage(tips.message)} received={!!tips?.received}/>
-                  : <IncomingMessage time={time} message={decryptMessage(tips.message)}/>
-              }
-            </Fragment>
-          )
-        })
+            return (
+              <Fragment key={i}>
+                {
+                  // 現在と前のタイムスタンプを使用してneedDividerを呼び出す
+                  i === 0 || needDivider(ms, chats[i - 1].timestamp.seconds * 1000) ? <DateDivider ms={ms}/> : null
+                }
+                {
+                  currentUser?.uid === tips.uid
+                    ? <OutgoingMessage time={time} message={decryptMessage(tips.message)} received={!!tips?.received}/>
+                    : <IncomingMessage time={time} message={decryptMessage(tips.message)}/>
+                }
+              </Fragment>
+            )
+          })
       }
       <form>
         <ChatInput onSendMessage={addMessage}/>

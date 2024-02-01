@@ -1,11 +1,13 @@
 import {Box, HStack, Text, VStack} from "@chakra-ui/react";
+import {ReactNode} from "react";
 
 type Props = {
   time: string,
-  message: string
+  message: string,
+  children?: ReactNode
 };
 
-export default function IncomingMessage({time, message}: Props) {
+export default function IncomingMessage({time, message, children}: Props) {
   return (
     <HStack justify="left" my={2}>
       <VStack maxW="45%" align="left" spacing={0}>
@@ -31,6 +33,7 @@ export default function IncomingMessage({time, message}: Props) {
           }}
         >
           {message.split("\n").map((v, i) => (<Text key={i}>{v}</Text>))}
+          {children}
         </Box>
       </VStack>
     </HStack>
