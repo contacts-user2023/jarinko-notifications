@@ -2,7 +2,6 @@ import {
   Image,
   HStack,
   Center,
-  Heading,
 } from '@chakra-ui/react';
 
 export default function Header() {
