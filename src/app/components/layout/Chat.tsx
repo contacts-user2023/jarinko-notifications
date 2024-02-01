@@ -14,7 +14,7 @@ import ChatInput from "@src/app/components/ui/ChatInput";
 import useChatMessages from "@src/app/hooks/useChatMessages";
 import {useSession} from "next-auth/react";
 import ScrollBottomButton from "@src/app/components/ui/ScrollBottomButton";
-import SkeletonChat from "@src/app/components/ui/SkeletonChat";
+import LoadingChat from "@src/app/components/ui/LoadingChat";
 
 type Props = {
   toUid?: string,
@@ -83,7 +83,7 @@ export default function Chat({toUid, partnerName}: Props) {
       </HStack>
       {
         !chats?.length && chats?.length !== 0 ?
-          <SkeletonChat/> :
+          <LoadingChat/> :
           chats && chats.map((tips: Chat, i: number) => {
             const ms = tips.timestamp.seconds * 1000;
             const time = toJSTTimeString(ms);
