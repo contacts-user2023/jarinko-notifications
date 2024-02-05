@@ -6,6 +6,7 @@ import {useEffect, useState} from "react";
 import {getAuth, onAuthStateChanged} from "firebase/auth";
 import {doc, onSnapshot} from "firebase/firestore";
 import {db} from "@src/app/libs/firebaseConfig";
+import {GoCommentDiscussion} from "react-icons/go";
 
 type Props = {
   uid: string,
@@ -36,7 +37,7 @@ export default function ChatAvatarButton({uid}: Props) {
       bg="inherit"
       color="green.400"
       size="sm"
-      icon={<ReactIcon iconName="BsChatDots" boxSize={6}/>}
+      icon={<ReactIcon iconName="GoCommentDiscussion" boxSize={6}/>}
     >
       {
         isBadge

@@ -61,3 +61,29 @@ export const createContact = async (body: { [key: string]: string }) => {
     content: body,
   });
 };
+
+export type Guide = {
+  id: string
+  publishedAt: string
+  title: string
+  content: string,
+  category?: {name: string},
+}
+
+export const listGuides = async () => {
+  const result = await client.getAllContents({
+    customRequestInit,
+    endpoint: 'guides',
+  });
+
+  return {contents: result || []};
+};
+
+export const getGuideById = async (id: string, queries: MicroCMSQueries = {}) => {
+  return client.get<Guide>({
+    customRequestInit,
+    endpoint: 'guides',
+    contentId: id,
+    queries,
+  })
+};

@@ -13,11 +13,17 @@ import {getHPURL} from "@/config/config";
 export default function Page() {
   return (
     <>
-      <VStack spacing={10} mb={20} align="left">
+      <VStack spacing={6} mb={20} align="left">
         <Link as={NextLink} href={getHPURL()} target="_blank">
           <HStack>
-            <Text>じゃりん子パワーホームページ</Text>
             <ReactIcon iconName='LuLink'/>
+            <Text>じゃりん子パワーホームページ</Text>
+          </HStack>
+        </Link>
+        <Link as={NextLink} href="/guides">
+          <HStack>
+            <ReactIcon iconName='LuBookOpen'/>
+            <Text>ユーザーガイド</Text>
           </HStack>
         </Link>
       </VStack>

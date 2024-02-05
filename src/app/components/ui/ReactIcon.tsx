@@ -25,6 +25,7 @@ import {
   LuLightbulbOff,
   LuLightbulb,
   LuArrowDownToLine,
+  LuBookOpen,
 } from "react-icons/lu";
 import {
   IoMdLogIn,
@@ -33,7 +34,8 @@ import {
 import {FaRegQuestionCircle} from "react-icons/fa";
 import {MdLockReset} from "react-icons/md";
 import {BsChatDots} from "react-icons/bs";
-import {PiToggleRightFill, PiToggleLeft} from "react-icons/pi";
+import {PiToggleRightFill, PiToggleLeft, PiDotsThreeBold} from "react-icons/pi";
+import { GoCommentDiscussion } from "react-icons/go";
 import {Icon} from "@chakra-ui/react";
 
 type IconName = string;
@@ -73,6 +75,9 @@ const icon = {
   LuArrowDownToLine: LuArrowDownToLine,
   PiToggleRightFill,
   PiToggleLeft,
+  LuBookOpen,
+  PiDotsThreeBold,
+  GoCommentDiscussion,
 };
 
 const RIcon = (iconName: string): typeof Icon => {

@@ -29,14 +29,14 @@ const initItems = (isAdmin = false): Items => {
     chat: {
       name: 'チャット',
       href: '/chat',
-      iconName: 'BsChatDots',
+      iconName: 'GoCommentDiscussion',
       isBadge: false,
       currentKey: 'chat',
     },
     settings: {
-      name: '設定',
+      name: 'その他',
       href: '/settings',
-      iconName: 'LuSettings',
+      iconName: 'PiDotsThreeBold',
       isBadge: false,
       currentKey: 'settings',
     },
