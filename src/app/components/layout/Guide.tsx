@@ -10,7 +10,6 @@ import {
 } from '@chakra-ui/react';
 import {getGuideById} from "@src/app/libs/microcms";
 import BackButton from "@src/app/components/ui/BackButton";
-import ReceivedTable from "@src/app/components/ui/ReceivedTable";
 import {getUser} from "@src/app/libs/serverUser";
 import parse from "html-react-parser";
 import {redirect} from "next/navigation";

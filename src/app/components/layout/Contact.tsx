@@ -12,7 +12,7 @@ import {getContactById} from "@src/app/libs/microcms";
 import {toJSTString} from "@src/app/libs/dateFormatter";
 import ReadAlertButton from "@src/app/components/ui/ReadAlertButton";
 import BackButton from "@src/app/components/ui/BackButton";
-import ReceivedTable from "@src/app/components/ui/ReceivedTable";
+import ReceivedAccordion from "@src/app/components/ui/ReceivedAccordion";
 import {getUser} from "@src/app/libs/serverUser";
 import parse from "html-react-parser";
 import {redirect} from "next/navigation";
@@ -60,7 +60,7 @@ export default async function Contact({id}: Props) {
       <CardHeader>
       <Text>{data.date}</Text>
       <Heading fontSize="2xl">{data.title}</Heading>
-      <ReceivedTable id={id}/>
+      <ReceivedAccordion id={id}/>
     </CardHeader>
       <CardBody>
         <Box as="div" sx={contentStyles}>
