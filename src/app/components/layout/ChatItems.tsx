@@ -1,15 +1,13 @@
 'use client';
 
-import {Box, HStack, Text, Spacer, Link} from '@chakra-ui/react';
+import {Box} from '@chakra-ui/react';
 import {Fragment} from "react";
 import {Timestamp} from "firebase/firestore";
 import {toJSTDateString, toJSTTimeString} from "@src/app/libs/dateFormatter";
 import DateDivider from "@src/app/components/ui/DateDivider";
 import OutgoingMessage from "@src/app/components/ui/OutgoingMessage";
 import IncomingMessage from "@src/app/components/ui/IncomingMessage";
-import ReactIcon from "@src/app/components/ui/ReactIcon";
 import {decryptMessage} from "@src/app/libs/encryption";
-import NextLink from "next/link";
 import ChatInput from "@src/app/components/ui/ChatInput";
 import useChatMessages from "@src/app/hooks/useChatMessages";
 import {useSession} from "next-auth/react";

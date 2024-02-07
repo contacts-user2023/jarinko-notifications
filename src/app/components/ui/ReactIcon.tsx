@@ -36,6 +36,7 @@ import {MdLockReset} from "react-icons/md";
 import {BsChatDots} from "react-icons/bs";
 import {PiToggleRightFill, PiToggleLeft, PiDotsThreeBold} from "react-icons/pi";
 import { GoCommentDiscussion } from "react-icons/go";
+import { BiHome, BiBookHeart, BiLogoInstagram } from "react-icons/bi";
 import {Icon} from "@chakra-ui/react";
 
 type IconName = string;
@@ -78,6 +79,9 @@ const icon = {
   LuBookOpen,
   PiDotsThreeBold,
   GoCommentDiscussion,
+  BiHome,
+  BiBookHeart,
+  BiLogoInstagram,
 };
 
 const RIcon = (iconName: string): typeof Icon => {

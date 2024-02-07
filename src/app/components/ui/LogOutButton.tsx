@@ -6,9 +6,7 @@ import {signOut} from "next-auth/react";
 import {getAuth, signOut as firebaseSignOut} from "@src/app/libs/firebaseConfig";
 import {useState} from "react";
 import {useSuccessToast} from "@src/app/hooks/useCustomToast";
-import {getMessaging, getToken} from "firebase/messaging";
-import {subscribeToken} from "@src/app/libs/messaging";
-import {getFCMPublicKey} from "@/config/config";
+import {unsubscribe} from "@src/app/libs/pushNotification";
 
 export default function LogOutButton() {
   const successToast = useSuccessToast();
@@ -16,13 +14,8 @@ export default function LogOutButton() {
 
   const onClickFunction = async () => {
     setIsDisabled(true);
-    const messaging = getMessaging();
     try {
-      // 新しいトークンを発行して、現在のトークンを無効化する
-      getToken(messaging, {vapidKey: getFCMPublicKey()});
-      localStorage.removeItem('methodCalledTime');
-      localStorage.removeItem('methodCallUid');
-      localStorage.removeItem('methodCallToken');
+      unsubscribe();
     } catch(e) {
       console.log('Failed clear token');
     }

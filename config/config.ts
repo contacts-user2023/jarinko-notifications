@@ -5,6 +5,9 @@ export const getVersion = () => {
 export const getHPURL = (): string => {
   return process.env.NEXT_PUBLIC_HP_URL || '';
 };
+export const getInstagramURL = (): string => {
+  return process.env.NEXT_PUBLIC_INSTAGRAM_URL || '';
+};
 
 type FirebaseConfig = {
   apiKey: string,

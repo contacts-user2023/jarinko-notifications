@@ -8,7 +8,6 @@ import {getUser} from "@src/app/libs/serverUser";
 import {redirect} from 'next/navigation'
 import ContactsItem from "@src/app/components/layout/ContactsItem";
 import {adminDb} from "@src/app/libs/firebaseAdminConfig";
-import FCMSubscribe from "@src/app/components/ui/FCMSubscribe";
 
 type Props = {
   children?: ReactNode
@@ -47,7 +46,6 @@ export default async function Contacts({children}: Props) {
           ))
         }
       </VStack>
-      <FCMSubscribe />
     </>
   )
 }
