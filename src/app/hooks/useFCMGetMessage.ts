@@ -19,7 +19,7 @@ export const useFCMMessage = () => {
           console.log('メッセージが受信されました:', payload);
 
           toast({
-            title: payload.notification.title,
+            title: payload?.notification?.title,
             status: 'info',
             variant: 'subtle',
             duration: 9000,
