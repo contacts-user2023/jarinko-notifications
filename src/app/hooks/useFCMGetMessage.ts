@@ -1,11 +1,13 @@
 'use client';
 
 import {useEffect, useState} from "react";
+import { useToast } from '@chakra-ui/react';
 import {onMessage} from 'firebase/messaging';
 import { getMessaging } from "firebase/messaging";
 import {firebaseApp} from "@src/app/libs/firebaseConfig";
 
 export const useFCMMessage = () => {
+  const toast = useToast();
   const [processed, setProcessed] = useState(false);
 
   useEffect(() => {
@@ -16,7 +18,13 @@ export const useFCMMessage = () => {
         onMessage(messaging, (payload) => {
           console.log('メッセージが受信されました:', payload);
 
-          // メッセージの内容に応じた処理をここに追加
+          toast({
+            title: payload.notification.title,
+            status: 'info',
+            variant: 'subtle',
+            duration: 9000,
+            isClosable: true,
+          })
         });
         setProcessed(true);
       }
