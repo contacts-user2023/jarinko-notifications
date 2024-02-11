@@ -21,7 +21,7 @@ export default async function Page ({params}: Props) {
       console.log(e);
     }
   } else {
-    partnerName = 'システム管理者';
+    partnerName = '管理者';
   }
 
   return <Chat toUid={params.id} partnerName={partnerName}/>

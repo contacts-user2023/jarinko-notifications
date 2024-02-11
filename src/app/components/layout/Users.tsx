@@ -1,6 +1,6 @@
 import {
   Button,
-  ButtonGroup,
+  Divider,
   VStack,
   HStack,
   Tabs,
@@ -30,11 +30,7 @@ export default async function Users() {
 
   return (
     <ToggleVisibilityProvider>
-      <HStack mb={4}>
-        <Spacer/>
-        <ToggleVisibilityButton/>
-      </HStack>
-      <ButtonGroup w="100%" mb={4} spacing={4} justifyContent="right">
+      <HStack mb={8} px={4}>
         <Button
           type="submit"
           variant="outline"
@@ -43,41 +39,42 @@ export default async function Users() {
           href="/users/new"
           rightIcon={<ReactIcon iconName='LuPencil'/>}
         >新規作成</Button>
-      </ButtonGroup>
+        <Spacer/>
+        <ToggleVisibilityButton/>
+      </HStack>
+      <Tabs variant='enclosed' defaultIndex={1}>
+        <TabList>
+          <Tab>すべて</Tab>
+          <Tab><ResponsiveText text="有効" responsiveText="なユーザー" boundary="sm"/></Tab>
+          <Tab><ResponsiveText text="無効" responsiveText="なユーザー" boundary="sm"/></Tab>
+        </TabList>
 
-        <Tabs variant='enclosed' defaultIndex={1}>
-          <TabList>
-            <Tab>すべて</Tab>
-            <Tab><ResponsiveText text="有効" responsiveText="なユーザー" boundary="sm"/></Tab>
-            <Tab><ResponsiveText text="無効" responsiveText="なユーザー" boundary="sm"/></Tab>
-          </TabList>
-
-          <TabPanels>
-            <TabPanel>
-              <VStack>
-                {users && (users as User[])?.map((user, i) => <UsersItem key={i} {...user} />)}
-              </VStack>
-            </TabPanel>
-            <TabPanel>
-              <VStack>
-                {users && (users as User[])?.map((user, i) => {
-                  if (!user.disabled) {
-                    return <UsersItem key={i} {...user} />
-                  }
-                })}
-              </VStack>
-            </TabPanel>
-            <TabPanel>
-              <VStack>
-                {users && (users as User[])?.map((user, i) => {
-                  if (user.disabled) {
-                    return <UsersItem key={i} {...user} />
-                  }
-                })}
-              </VStack>
-            </TabPanel>
-          </TabPanels>
-        </Tabs>
-      </ToggleVisibilityProvider>
+        <TabPanels>
+          <TabPanel>
+            <VStack>
+              {users && (users as User[])?.map((user, i) => <UsersItem key={i} {...user} />)}
+            </VStack>
+          </TabPanel>
+          <TabPanel>
+            <VStack>
+              {users && (users as User[])?.map((user, i) => {
+                if (!user.disabled) {
+                  return <UsersItem key={i} {...user} />
+                }
+              })}
+            </VStack>
+          </TabPanel>
+          <TabPanel>
+            <VStack>
+              {users && (users as User[])?.map((user, i) => {
+                if (user.disabled) {
+                  return <UsersItem key={i} {...user} />
+                }
+              })}
+            </VStack>
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
+    </ToggleVisibilityProvider>
   )
 }

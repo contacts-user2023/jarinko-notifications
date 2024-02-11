@@ -22,7 +22,7 @@ export const useFCMMessage = () => {
             title: payload?.notification?.title,
             status: 'info',
             variant: 'subtle',
-            duration: 9000,
+            duration: 5000,
             isClosable: true,
           })
         });
