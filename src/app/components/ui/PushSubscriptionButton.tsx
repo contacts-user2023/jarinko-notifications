@@ -25,36 +25,41 @@ export default function PushSubscriptionButton() {
   const testPush = async () => {
     const methodCallToken = localStorage.getItem('methodCallToken') || '';
 
-    if(methodCallToken) {
+    if (methodCallToken) {
       const api = await fetch('/api/push/test', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({"token": methodCallToken})
       });
-      if(api?.ok) {
+      if (api?.ok) {
         localStorage.setItem('isOkTest', 'true');
+        setIsOkTest(true);
       }
     }
   };
 
   return (
+    <HStack w="100%">
       <HStack
-        w="100%"
         onClick={onClickHandler}
         _hover={{cursor: 'pointer'}}
         sx={{svg: {color: isSubscribe ? 'green.400' : 'gray.400'}}}
       >
         <ReactIcon iconName={isSubscribe ? 'PiToggleRightFill' : 'PiToggleLeft'} boxSize={10}/>
         <Text>プッシュ通知を{isSubscribe ? '許可中' : '拒否中'}</Text>
-        <Spacer />
+      </HStack>
+      <Spacer/>
+      {
+        !isOkTest &&
         <Button
           onClick={testPush}
           colorScheme="blue"
           size="sm"
-          isDisabled={!isSubscribe || isOkTest}
+          isDisabled={!isSubscribe}
         >
-          {isOkTest ? 'テストOK' : '通知テスト'}
+          通知テスト
         </Button>
-      </HStack>
+      }
+    </HStack>
   );
 }

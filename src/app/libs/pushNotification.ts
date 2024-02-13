@@ -22,6 +22,7 @@ export const unsubscribe = async () => {
   localStorage.removeItem('methodCalledTime');
   localStorage.removeItem('methodCallUid');
   localStorage.removeItem('methodCallToken');
+  localStorage.removeItem('isOkTest');
 
   return result;
 };
