@@ -7,9 +7,9 @@ export const useInfoToast = () => {
     toast({
       title: title,
       description: description,
-      status: 'success',
+      status: 'info',
       variant: 'subtle',
-      position: 'top',
+      position: 'bottom',
       duration: 5000,
       isClosable: true,
     });
